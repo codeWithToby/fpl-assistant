@@ -1,5 +1,8 @@
 # Project: FPL Optimal Team & Captain Assistant
 
+## Full requirements
+See [prd.md](./prd.md) for the full product requirements — read it before scoping any new feature work.
+
 ## Stack
 - Next.js (App Router)
 - Tailwind CSS
