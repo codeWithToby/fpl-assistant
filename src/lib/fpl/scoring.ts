@@ -48,11 +48,16 @@ function resolveNailedOn(
 
 type BreakdownDraft = Omit<CaptainScoreBreakdown, "reasoning" | "oneLinerReason">;
 
+// Describes THIS player's situation — it doesn't know (and shouldn't need
+// to know) whether it's being shown as the #1 featured pick or as one of
+// several ranked alternatives further down. "Is the captain pick" framing
+// belongs to the card that's actually featured (see CaptainCard.tsx's
+// "Captain pick" label on the #1 card), not baked into a sentence reused
+// for every squad member — otherwise #2 through #15 all claim to be the
+// pick too, which just isn't true.
 function buildOneLiner(breakdown: BreakdownDraft, finishedGameweekCount: number): string {
-  const { webName } = breakdown;
-
   if (!breakdown.hasFixtureThisGameweek) {
-    return `${webName} has no fixture this gameweek, so they're not in contention for the armband.`;
+    return "No fixture this gameweek.";
   }
 
   if (breakdown.availability.multiplier === 0) {
@@ -60,19 +65,19 @@ function buildOneLiner(breakdown: BreakdownDraft, finishedGameweekCount: number)
     // fallback phrase — otherwise it just repeats itself.
     const note = breakdown.availability.note;
     const reason = note && note !== "Not fit for captaincy" ? ` (${note.toLowerCase()})` : "";
-    return `${webName} isn't fit for captaincy right now${reason} — look elsewhere in your squad.`;
+    return `Not fit for captaincy right now${reason}.`;
   }
 
   const fx = breakdown.components.fixture;
   const fixtureClause = fx
-    ? `${fx.isHome ? "a home" : "an away"} match against ${fx.opponentShortName} (FDR ${fx.fdr}/5)`
+    ? `${fx.isHome ? "home" : "away"} vs ${fx.opponentShortName} (FDR ${fx.fdr}/5)`
     : "an unclear fixture";
 
   const starterClause = breakdown.nailedOn
     ? finishedGameweekCount === 0
-      ? "expected to start once the season kicks off"
-      : "a nailed-on starter"
-    : "carrying some rotation risk";
+      ? "Expected to start once the season kicks off"
+      : "Nailed-on starter"
+    : "Carrying some rotation risk";
 
   const doubtClause = breakdown.availability.note
     ? `, though ${breakdown.availability.note.toLowerCase()}`
@@ -82,7 +87,7 @@ function buildOneLiner(breakdown: BreakdownDraft, finishedGameweekCount: number)
     ? " Every signal lines up — a genuine Triple Captain candidate."
     : "";
 
-  return `${webName} is the captain pick: ${starterClause}, with ${fixtureClause} and ${breakdown.components.xgi.per90.toFixed(2)} xGI/90${doubtClause}.${tcClause}`;
+  return `${starterClause}, ${fixtureClause}, ${breakdown.components.xgi.per90.toFixed(2)} xGI/90${doubtClause}.${tcClause}`;
 }
 
 function buildReasoning(breakdown: BreakdownDraft, finishedGameweekCount: number): string[] {
