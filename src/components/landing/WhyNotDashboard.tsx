@@ -1,6 +1,6 @@
 export default function WhyNotDashboard() {
   return (
-    <section className="relative overflow-hidden px-4 py-16 md:py-24 lg:px-8">
+    <section className="relative overflow-hidden border-t border-transparent px-4 py-16 dark:border-white/10 md:py-24 lg:px-8">
       {/* Faint pitch-circle echoes, tying back to the Optimal XI pitch
           visual — restrained corner accents, not a generic gradient blob. */}
       <div

@@ -96,7 +96,7 @@ const FEATURES: Feature[] = [
 
 export default function FeatureHighlights() {
   return (
-    <section className="border-t border-zinc-200 bg-zinc-50 px-4 py-16 dark:border-zinc-800 dark:bg-transparent md:py-24 lg:px-8">
+    <section className="border-t border-zinc-200 bg-zinc-50 px-4 py-16 dark:border-white/10 dark:bg-white/[0.03] md:py-24 lg:px-8">
       <div className="mx-auto max-w-7xl">
         <div className="max-w-2xl">
           <span className="text-xs font-bold uppercase tracking-wide text-brand-light dark:text-pitch">

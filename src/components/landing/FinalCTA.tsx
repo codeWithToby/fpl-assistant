@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export default function FinalCTA() {
   return (
-    <section className="border-t border-zinc-200 bg-zinc-50 px-4 py-16 text-center dark:border-zinc-800 dark:bg-transparent md:py-24 lg:px-8">
+    <section className="border-t border-zinc-200 bg-zinc-50 px-4 py-16 text-center dark:border-white/10 dark:bg-white/[0.03] md:py-24 lg:px-8">
       <div className="mx-auto max-w-xl">
         <h2 className="text-2xl font-bold tracking-tight text-foreground md:text-3xl">
           Ready to let your assistant make the call?
