@@ -59,8 +59,8 @@ export default function CaptainAssistant({ bootstrap, fixtures }: Props) {
     <div className="flex flex-col">
       {/* Masthead — FPL's own purple-to-green gradient, used once here as
           the identifying brand moment rather than scattered everywhere. */}
-      <header className="bg-[linear-gradient(160deg,var(--brand)_0%,var(--brand-light)_45%,var(--pitch)_150%)] px-4 pb-10 pt-8 md:pb-14 md:pt-12">
-        <div className="mx-auto max-w-2xl">
+      <header className="bg-[linear-gradient(160deg,var(--brand)_0%,var(--brand-light)_45%,var(--pitch)_150%)] px-4 pb-10 pt-8 md:pb-14 md:pt-12 lg:px-8">
+        <div className="mx-auto max-w-7xl">
           <span className="text-xs font-bold uppercase tracking-wide text-pitch">
             FPL Captain Assistant
           </span>
@@ -75,28 +75,36 @@ export default function CaptainAssistant({ bootstrap, fixtures }: Props) {
         </div>
       </header>
 
-      <div className="mx-auto -mt-6 flex w-full max-w-2xl flex-col gap-8 px-4 pb-12 md:-mt-8">
-        <SquadBuilder
-          allPlayers={bootstrap.players}
-          teams={bootstrap.teams}
-          squadPlayers={squadPlayers}
-          onAdd={addPlayer}
-          onRemove={removePlayer}
-          onReplaceSquad={replaceSquad}
-          isFull={isFull}
-        />
+      {/* Single column on mobile; sidebar (squad) + main content (insights)
+          on wide screens, like a normal web app rather than a stretched
+          phone layout. The squad panel stays sticky on desktop so it's
+          visible while scrolling through recommendations. */}
+      <div className="mx-auto -mt-6 w-full max-w-7xl px-4 pb-12 md:-mt-8 lg:grid lg:grid-cols-[380px_1fr] lg:items-start lg:gap-8 lg:px-8">
+        <div className="lg:sticky lg:top-8">
+          <SquadBuilder
+            allPlayers={bootstrap.players}
+            teams={bootstrap.teams}
+            squadPlayers={squadPlayers}
+            onAdd={addPlayer}
+            onRemove={removePlayer}
+            onReplaceSquad={replaceSquad}
+            isFull={isFull}
+          />
+        </div>
 
-        {squadPlayers.length > 0 && (
-          <CaptainRecommendations ranked={ranked} noFixture={noFixture} />
-        )}
+        <div className="mt-8 flex flex-col gap-8 lg:mt-0">
+          {squadPlayers.length > 0 && (
+            <CaptainRecommendations ranked={ranked} noFixture={noFixture} />
+          )}
 
-        {optimalXI && <OptimalXI result={optimalXI} />}
+          {optimalXI && <OptimalXI result={optimalXI} />}
 
-        {squadPlayers.length > 0 && !isSquadComplete && (
-          <p className="text-center text-xs text-zinc-400">
-            Add all 15 players to see your optimal starting XI and formation.
-          </p>
-        )}
+          {squadPlayers.length > 0 && !isSquadComplete && (
+            <p className="text-center text-xs text-zinc-400">
+              Add all 15 players to see your optimal starting XI and formation.
+            </p>
+          )}
+        </div>
       </div>
     </div>
   );

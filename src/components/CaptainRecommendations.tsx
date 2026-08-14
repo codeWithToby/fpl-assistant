@@ -40,7 +40,7 @@ export default function CaptainRecommendations({ ranked, noFixture }: Props) {
               </button>
 
               {showRest && (
-                <div className="mt-3 flex flex-col gap-3">
+                <div className="mt-3 grid grid-cols-1 gap-3 xl:grid-cols-2">
                   {rest.map((breakdown, i) => (
                     <CaptainCard breakdown={breakdown} rank={i + 2} key={breakdown.playerId} />
                   ))}

@@ -23,7 +23,7 @@ export default function OptimalXI({ result }: { result: OptimalXIResult }) {
               <h3 className="text-xs font-bold uppercase tracking-wide text-zinc-400">
                 {POSITION_LABELS[type]}
               </h3>
-              <div className="flex flex-col gap-2">
+              <div className="grid grid-cols-1 gap-2 xl:grid-cols-2">
                 {slots.map((slot) => (
                   <XISlotRow slot={slot} key={slot.playerId} />
                 ))}
@@ -36,7 +36,7 @@ export default function OptimalXI({ result }: { result: OptimalXIResult }) {
       {result.bench.length > 0 && (
         <div className="flex flex-col gap-2">
           <h3 className="text-xs font-bold uppercase tracking-wide text-zinc-400">Bench</h3>
-          <div className="flex flex-col gap-2">
+          <div className="grid grid-cols-1 gap-2 xl:grid-cols-2">
             {result.bench.map((slot) => (
               <XISlotRow slot={slot} key={slot.playerId} />
             ))}
