@@ -1,0 +1,94 @@
+// Trimmed shapes of the fields we actually use from the FPL API.
+// Field names/values confirmed directly against the live API.
+
+export type PlayerStatus = "a" | "d" | "i" | "s" | "u" | "n";
+
+export interface Player {
+  id: number;
+  webName: string;
+  team: number; // Team.id
+  elementType: number; // 1=GK 2=DEF 3=MID 4=FWD
+  nowCost: number; // tenths of £m, e.g. 155 -> £15.5m
+  minutes: number;
+  form: number;
+  selectedByPercent: number;
+  expectedGoalsPer90: number;
+  expectedAssistsPer90: number;
+  expectedGoalInvolvementsPer90: number;
+  expectedGoalsConcededPer90: number;
+  status: PlayerStatus;
+  chanceOfPlayingNextRound: number | null;
+}
+
+export interface Team {
+  id: number;
+  name: string;
+  shortName: string;
+}
+
+export interface GameweekEvent {
+  id: number;
+  name: string;
+  isCurrent: boolean;
+  isNext: boolean;
+  finished: boolean;
+}
+
+export interface ElementType {
+  id: number;
+  singularName: string;
+  squadSelect: number;
+}
+
+export interface Fixture {
+  id: number;
+  event: number | null; // null for unscheduled fixtures
+  kickoffTime: string | null;
+  started: boolean;
+  finished: boolean;
+  teamH: number; // Team.id
+  teamA: number; // Team.id
+  teamHDifficulty: number; // 1 (easiest) - 5 (hardest)
+  teamADifficulty: number;
+}
+
+export interface BootstrapData {
+  players: Player[];
+  teams: Team[];
+  events: GameweekEvent[];
+  elementTypes: ElementType[];
+}
+
+export interface FixturesData {
+  fixtures: Fixture[];
+}
+
+// --- Captain recommendation output ---
+
+export interface CaptainScoreBreakdown {
+  playerId: number;
+  webName: string;
+  teamShortName: string;
+  totalScore: number; // 0-100, rounded
+  components: {
+    xgi: { per90: number; score: number; weight: number };
+    fixture: {
+      opponentShortName: string;
+      isHome: boolean;
+      fdr: number;
+      score: number;
+      weight: number;
+    } | null;
+    form: { value: number; score: number; weight: number };
+  };
+  availability: {
+    status: PlayerStatus;
+    chanceOfPlaying: number | null;
+    multiplier: number;
+    note: string | null;
+  };
+  nailedOn: boolean;
+  isTripleCaptainCandidate: boolean;
+  hasFixtureThisGameweek: boolean;
+  reasoning: string[];
+}
