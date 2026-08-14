@@ -91,4 +91,41 @@ export interface CaptainScoreBreakdown {
   isTripleCaptainCandidate: boolean;
   hasFixtureThisGameweek: boolean;
   reasoning: string[];
+  /** One plain-language sentence — the primary UI shows this, not the list. */
+  oneLinerReason: string;
+}
+
+// --- Clean sheet probability ---
+
+export interface CleanSheetEstimate {
+  playerId: number;
+  probability: number; // 0-100, rounded
+  hasFixtureThisGameweek: boolean;
+  fixture: {
+    opponentShortName: string;
+    isHome: boolean;
+    fdr: number;
+  } | null;
+  usedFallbackRate: boolean; // true if own xGC/90 sample was too small
+}
+
+// --- Optimal XI ---
+
+export interface XISlot {
+  playerId: number;
+  webName: string;
+  teamShortName: string;
+  elementType: number;
+  value: number; // 0-100, comparable across positions
+  isStarter: boolean;
+  benchOrder: number | null; // 1-4 if bench, null if starter
+  rotationRisk: boolean;
+  rotationNote: string | null;
+  cleanSheetProbability: number | null; // GK/DEF only
+}
+
+export interface OptimalXIResult {
+  formation: string; // e.g. "4-4-2" (DEF-MID-FWD)
+  starters: XISlot[]; // 11, GK included
+  bench: XISlot[]; // 4, ordered by benchOrder
 }

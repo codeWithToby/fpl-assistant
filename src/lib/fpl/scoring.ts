@@ -46,7 +46,46 @@ function resolveNailedOn(
   return ratio >= NAILED_ON_MINUTES_RATIO;
 }
 
-function buildReasoning(breakdown: Omit<CaptainScoreBreakdown, "reasoning">, finishedGameweekCount: number): string[] {
+type BreakdownDraft = Omit<CaptainScoreBreakdown, "reasoning" | "oneLinerReason">;
+
+function buildOneLiner(breakdown: BreakdownDraft, finishedGameweekCount: number): string {
+  const { webName } = breakdown;
+
+  if (!breakdown.hasFixtureThisGameweek) {
+    return `${webName} has no fixture this gameweek, so they're not in contention for the armband.`;
+  }
+
+  if (breakdown.availability.multiplier === 0) {
+    // Only append the note when it's more specific than the generic
+    // fallback phrase — otherwise it just repeats itself.
+    const note = breakdown.availability.note;
+    const reason = note && note !== "Not fit for captaincy" ? ` (${note.toLowerCase()})` : "";
+    return `${webName} isn't fit for captaincy right now${reason} — look elsewhere in your squad.`;
+  }
+
+  const fx = breakdown.components.fixture;
+  const fixtureClause = fx
+    ? `${fx.isHome ? "a home" : "an away"} match against ${fx.opponentShortName} (FDR ${fx.fdr}/5)`
+    : "an unclear fixture";
+
+  const starterClause = breakdown.nailedOn
+    ? finishedGameweekCount === 0
+      ? "expected to start once the season kicks off"
+      : "a nailed-on starter"
+    : "carrying some rotation risk";
+
+  const doubtClause = breakdown.availability.note
+    ? `, though ${breakdown.availability.note.toLowerCase()}`
+    : "";
+
+  const tcClause = breakdown.isTripleCaptainCandidate
+    ? " Every signal lines up — a genuine Triple Captain candidate."
+    : "";
+
+  return `${webName} is the captain pick: ${starterClause}, with ${fixtureClause} and ${breakdown.components.xgi.per90.toFixed(2)} xGI/90${doubtClause}.${tcClause}`;
+}
+
+function buildReasoning(breakdown: BreakdownDraft, finishedGameweekCount: number): string[] {
   const lines: string[] = [];
 
   if (!breakdown.hasFixtureThisGameweek) {
@@ -122,7 +161,7 @@ export function computeCaptainScore(
     ? teams.find((t) => t.id === nextFixture.opponentTeamId)
     : null;
 
-  const breakdown: Omit<CaptainScoreBreakdown, "reasoning"> = {
+  const breakdown: BreakdownDraft = {
     playerId: player.id,
     webName: player.webName,
     teamShortName: teams.find((t) => t.id === player.team)?.shortName ?? "?",
@@ -165,5 +204,6 @@ export function computeCaptainScore(
   return {
     ...breakdown,
     reasoning: buildReasoning(breakdown, finishedGameweekCount),
+    oneLinerReason: buildOneLiner(breakdown, finishedGameweekCount),
   };
 }

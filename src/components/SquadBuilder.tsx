@@ -2,6 +2,7 @@ import type { Player, Team } from "@/lib/fpl/types";
 import { MAX_SQUAD_SIZE } from "@/hooks/useSquadSelection";
 import PlayerSearchCombobox from "./PlayerSearchCombobox";
 import PositionCountBadges from "./PositionCountBadges";
+import RandomSquadButton from "./RandomSquadButton";
 import SquadList from "./SquadList";
 
 interface Props {
@@ -10,6 +11,7 @@ interface Props {
   squadPlayers: Player[];
   onAdd: (id: number) => void;
   onRemove: (id: number) => void;
+  onReplaceSquad: (ids: number[]) => void;
   isFull: boolean;
 }
 
@@ -19,6 +21,7 @@ export default function SquadBuilder({
   squadPlayers,
   onAdd,
   onRemove,
+  onReplaceSquad,
   isFull,
 }: Props) {
   return (
@@ -33,6 +36,8 @@ export default function SquadBuilder({
       </div>
 
       <PositionCountBadges squadPlayers={squadPlayers} />
+
+      <RandomSquadButton allPlayers={allPlayers} onGenerate={onReplaceSquad} />
 
       <PlayerSearchCombobox
         allPlayers={allPlayers}

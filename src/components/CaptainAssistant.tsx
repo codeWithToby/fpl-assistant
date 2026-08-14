@@ -2,11 +2,13 @@
 
 import { useMemo } from "react";
 import type { BootstrapData, FixturesData, Player } from "@/lib/fpl/types";
-import { useSquadSelection } from "@/hooks/useSquadSelection";
+import { useSquadSelection, MAX_SQUAD_SIZE } from "@/hooks/useSquadSelection";
 import { computeCaptainScore } from "@/lib/fpl/scoring";
+import { computeOptimalXI } from "@/lib/fpl/optimalXI";
 import { getFinishedGameweekCount } from "@/lib/fpl/getCurrentGameweek";
 import SquadBuilder from "./SquadBuilder";
 import CaptainRecommendations from "./CaptainRecommendations";
+import OptimalXI from "./OptimalXI";
 
 interface Props {
   bootstrap: BootstrapData;
@@ -14,7 +16,7 @@ interface Props {
 }
 
 export default function CaptainAssistant({ bootstrap, fixtures }: Props) {
-  const { squadIds, addPlayer, removePlayer, isFull } = useSquadSelection();
+  const { squadIds, addPlayer, removePlayer, replaceSquad, isFull } = useSquadSelection();
 
   const playersById = useMemo(() => {
     const map = new Map<number, Player>();
@@ -46,6 +48,13 @@ export default function CaptainAssistant({ bootstrap, fixtures }: Props) {
   const ranked = recommendations.filter((r) => r.hasFixtureThisGameweek);
   const noFixture = recommendations.filter((r) => !r.hasFixtureThisGameweek);
 
+  const isSquadComplete = squadPlayers.length === MAX_SQUAD_SIZE;
+
+  const optimalXI = useMemo(() => {
+    if (!isSquadComplete) return null;
+    return computeOptimalXI(squadPlayers, bootstrap.teams, fixtures.fixtures, finishedGameweekCount);
+  }, [isSquadComplete, squadPlayers, bootstrap.teams, fixtures.fixtures, finishedGameweekCount]);
+
   return (
     <div className="flex flex-col">
       {/* Masthead — FPL's own purple-to-green gradient, used once here as
@@ -73,11 +82,20 @@ export default function CaptainAssistant({ bootstrap, fixtures }: Props) {
           squadPlayers={squadPlayers}
           onAdd={addPlayer}
           onRemove={removePlayer}
+          onReplaceSquad={replaceSquad}
           isFull={isFull}
         />
 
         {squadPlayers.length > 0 && (
           <CaptainRecommendations ranked={ranked} noFixture={noFixture} />
+        )}
+
+        {optimalXI && <OptimalXI result={optimalXI} />}
+
+        {squadPlayers.length > 0 && !isSquadComplete && (
+          <p className="text-center text-xs text-zinc-400">
+            Add all 15 players to see your optimal starting XI and formation.
+          </p>
         )}
       </div>
     </div>

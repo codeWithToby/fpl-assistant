@@ -1,3 +1,6 @@
+"use client";
+
+import { useState } from "react";
 import type { CaptainScoreBreakdown } from "@/lib/fpl/types";
 import TripleCaptainBadge from "./TripleCaptainBadge";
 
@@ -8,6 +11,7 @@ interface Props {
 }
 
 export default function CaptainCard({ breakdown, rank, featured = false }: Props) {
+  const [showDetail, setShowDetail] = useState(false);
   const isRisk = breakdown.availability.multiplier < 1;
 
   if (featured) {
@@ -16,7 +20,7 @@ export default function CaptainCard({ breakdown, rank, featured = false }: Props
         <div className="flex items-start justify-between gap-4">
           <div>
             <span className="text-xs font-bold uppercase tracking-wide text-white/60">
-              #{rank} pick
+              Captain pick
             </span>
             <h3 className="mt-1 text-2xl font-bold tracking-tight text-white">
               {breakdown.webName}{" "}
@@ -34,20 +38,34 @@ export default function CaptainCard({ breakdown, rank, featured = false }: Props
           </div>
         )}
 
-        <ul className="mt-3 space-y-1">
-          {breakdown.reasoning.map((line) => (
-            <li
-              key={line}
-              className={`text-sm leading-relaxed ${
-                isRisk && line === breakdown.availability.note
-                  ? "font-semibold text-warning"
-                  : "text-white/85"
-              }`}
-            >
-              {line}
-            </li>
-          ))}
-        </ul>
+        <p className="mt-3 text-sm leading-relaxed text-white/90">
+          {breakdown.oneLinerReason}
+        </p>
+
+        <button
+          type="button"
+          onClick={() => setShowDetail((v) => !v)}
+          className="mt-3 text-xs font-bold uppercase tracking-wide text-pitch underline-offset-2 hover:underline"
+        >
+          {showDetail ? "Hide full breakdown" : "See full breakdown"}
+        </button>
+
+        {showDetail && (
+          <ul className="mt-3 space-y-1 border-t border-white/15 pt-3">
+            {breakdown.reasoning.map((line) => (
+              <li
+                key={line}
+                className={`text-sm leading-relaxed ${
+                  isRisk && line === breakdown.availability.note
+                    ? "font-semibold text-warning"
+                    : "text-white/80"
+                }`}
+              >
+                {line}
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
     );
   }
@@ -79,20 +97,9 @@ export default function CaptainCard({ breakdown, rank, featured = false }: Props
         </div>
       )}
 
-      <ul className="mt-3 space-y-1">
-        {breakdown.reasoning.map((line) => (
-          <li
-            key={line}
-            className={`text-sm leading-relaxed ${
-              isRisk && line === breakdown.availability.note
-                ? "font-medium text-risk"
-                : "text-zinc-600"
-            }`}
-          >
-            {line}
-          </li>
-        ))}
-      </ul>
+      <p className="mt-2 text-sm leading-relaxed text-zinc-600">
+        {breakdown.oneLinerReason}
+      </p>
     </div>
   );
 }

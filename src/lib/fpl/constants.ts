@@ -49,3 +49,54 @@ export const POSITION_ORDER = [1, 2, 3, 4] as const;
 export function formatPrice(nowCost: number): string {
   return `£${(nowCost / 10).toFixed(1)}m`;
 }
+
+// --- Clean sheet probability ---
+
+// A team's expected goals conceded for a fixture is modelled as the
+// player's own expectedGoalsConcededPer90 (their team's defensive rate
+// while they're on the pitch), adjusted by how hard the next fixture is.
+// FDR 3 (average) is a 1.0x no-op; easier fixtures scale it down, harder
+// fixtures scale it up.
+export const CLEAN_SHEET_FDR_MULTIPLIERS: Record<number, number> = {
+  1: 0.65,
+  2: 0.8,
+  3: 1.0,
+  4: 1.25,
+  5: 1.55,
+};
+
+// If a player has barely played, their own xGC/90 is unreliable (small
+// sample, or a fresh transfer with no minutes yet) — fall back to a
+// neutral league-average expected-goals-conceded rate instead.
+export const CLEAN_SHEET_MIN_MINUTES_FOR_OWN_RATE = 180; // ~2 full games
+export const CLEAN_SHEET_LEAGUE_AVERAGE_XGC = 1.3;
+
+// --- Optimal XI / formation ---
+
+export const STARTING_XI_SIZE = 11;
+export const FORMATION_LIMITS = {
+  gk: 1,
+  def: { min: 3, max: 5 },
+  mid: { min: 2, max: 5 },
+  fwd: { min: 1, max: 3 },
+} as const;
+
+// Weighting for the GK/DEF "starting XI value" score — distinct from the
+// captain score, since attacking output (xGI) barely applies to defensive
+// players but clean sheet probability does.
+export const DEFENSIVE_VALUE_WEIGHTS = {
+  cleanSheet: 0.6,
+  xgi: 0.4,
+} as const;
+
+// --- Random squad generator ---
+
+export const SQUAD_BUDGET = 1000; // tenths of £m, i.e. £100.0m
+export const MAX_PLAYERS_PER_TEAM = 3;
+export const SQUAD_POSITION_NEEDS: Record<number, number> = {
+  1: 2, // GK
+  2: 5, // DEF
+  3: 5, // MID
+  4: 3, // FWD
+};
+export const RANDOM_SQUAD_MAX_ATTEMPTS = 25;

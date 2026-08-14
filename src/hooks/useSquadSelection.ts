@@ -41,10 +41,15 @@ export function useSquadSelection() {
     setSquadIds((prev) => prev.filter((pid) => pid !== id));
   }, []);
 
+  const replaceSquad = useCallback((ids: number[]) => {
+    setSquadIds(ids);
+  }, []);
+
   return {
     squadIds,
     addPlayer,
     removePlayer,
+    replaceSquad,
     isFull: squadIds.length >= MAX_SQUAD_SIZE,
   };
 }
