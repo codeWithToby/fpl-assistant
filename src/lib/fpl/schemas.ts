@@ -50,7 +50,6 @@ export const rawEventSchema = z.object({
   is_current: z.boolean(),
   is_next: z.boolean(),
   finished: z.boolean(),
-  deadline_time: z.string(),
 });
 
 export const rawElementTypeSchema = z.object({

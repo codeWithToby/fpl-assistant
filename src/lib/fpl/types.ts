@@ -32,7 +32,6 @@ export interface GameweekEvent {
   isCurrent: boolean;
   isNext: boolean;
   finished: boolean;
-  deadlineTime: string; // ISO string, e.g. "2026-08-21T17:30:00Z"
 }
 
 export interface ElementType {

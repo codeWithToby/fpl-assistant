@@ -45,7 +45,6 @@ async function fetchBootstrapRaw(): Promise<BootstrapData> {
       isCurrent: e.is_current,
       isNext: e.is_next,
       finished: e.finished,
-      deadlineTime: e.deadline_time,
     })),
     elementTypes: raw.element_types.map((et) => ({
       id: et.id,
