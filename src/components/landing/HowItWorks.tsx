@@ -21,7 +21,7 @@ export default function HowItWorks() {
     <section className="px-4 py-16 md:py-24 lg:px-8">
       <div className="mx-auto max-w-7xl">
         <div className="max-w-2xl">
-          <span className="text-xs font-bold uppercase tracking-wide text-brand-light">
+          <span className="text-xs font-bold uppercase tracking-wide text-brand-light dark:text-pitch">
             How it works
           </span>
           <h2 className="mt-2 text-2xl font-bold tracking-tight text-foreground md:text-3xl">
@@ -36,7 +36,9 @@ export default function HowItWorks() {
                 {i + 1}
               </span>
               <h3 className="mt-3 text-lg font-semibold text-foreground">{step.title}</h3>
-              <p className="mt-1 text-sm leading-relaxed text-zinc-600">{step.description}</p>
+              <p className="mt-1 text-sm leading-relaxed text-zinc-600 dark:text-zinc-300">
+                {step.description}
+              </p>
             </div>
           ))}
         </div>

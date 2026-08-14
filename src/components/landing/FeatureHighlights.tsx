@@ -42,10 +42,10 @@ const FEATURES: Feature[] = [
 
 export default function FeatureHighlights() {
   return (
-    <section className="border-t border-zinc-200 bg-zinc-50 px-4 py-16 md:py-24 lg:px-8">
+    <section className="border-t border-zinc-200 bg-zinc-50 px-4 py-16 dark:border-zinc-800 dark:bg-transparent md:py-24 lg:px-8">
       <div className="mx-auto max-w-7xl">
         <div className="max-w-2xl">
-          <span className="text-xs font-bold uppercase tracking-wide text-brand-light">
+          <span className="text-xs font-bold uppercase tracking-wide text-brand-light dark:text-pitch">
             What your assistant does today
           </span>
           <h2 className="mt-2 text-2xl font-bold tracking-tight text-foreground md:text-3xl">
@@ -60,7 +60,7 @@ export default function FeatureHighlights() {
               className="rounded-[10px] bg-background p-6 shadow-[0_8px_24px_-12px_rgba(0,0,0,0.35)]"
             >
               <svg
-                className="h-6 w-6 text-brand-light"
+                className="h-6 w-6 text-brand-light dark:text-pitch"
                 viewBox="0 0 16 16"
                 fill="none"
                 stroke="currentColor"
@@ -69,12 +69,16 @@ export default function FeatureHighlights() {
                 {f.icon}
               </svg>
               <h3 className="mt-4 text-lg font-semibold text-foreground">{f.title}</h3>
-              <p className="mt-1 text-sm leading-relaxed text-zinc-600">{f.description}</p>
+              <p className="mt-1 text-sm leading-relaxed text-zinc-600 dark:text-zinc-300">
+                {f.description}
+              </p>
             </div>
           ))}
         </div>
 
-        <p className="mt-8 text-sm text-zinc-500">More of your weekly decisions are on the way.</p>
+        <p className="mt-8 text-sm text-zinc-500 dark:text-zinc-400">
+          More of your weekly decisions are on the way.
+        </p>
       </div>
     </section>
   );

@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export default function FinalCTA() {
   return (
-    <section className="border-t border-zinc-200 bg-zinc-50 px-4 py-16 text-center md:py-24 lg:px-8">
+    <section className="border-t border-zinc-200 bg-zinc-50 px-4 py-16 text-center dark:border-zinc-800 dark:bg-transparent md:py-24 lg:px-8">
       <div className="mx-auto max-w-xl">
         <h2 className="text-2xl font-bold tracking-tight text-foreground md:text-3xl">
           Ready to let your assistant make the call?
@@ -14,7 +14,10 @@ export default function FinalCTA() {
           >
             Set up your squad
           </Link>
-          <Link href="/squad" className="text-sm font-semibold text-brand-light hover:text-brand">
+          <Link
+            href="/squad"
+            className="text-sm font-semibold text-brand-light hover:text-brand dark:text-pitch dark:hover:text-pitch-dark"
+          >
             Or try a random squad →
           </Link>
         </div>
