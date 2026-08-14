@@ -1,18 +1,17 @@
-import CaptainAssistant from "@/components/CaptainAssistant";
-import { fetchBootstrap } from "@/lib/fpl/fetchBootstrap";
-import { fetchFixtures } from "@/lib/fpl/fetchFixtures";
+import LandingHero from "@/components/landing/LandingHero";
+import HowItWorks from "@/components/landing/HowItWorks";
+import FeatureHighlights from "@/components/landing/FeatureHighlights";
+import WhyNotDashboard from "@/components/landing/WhyNotDashboard";
+import FinalCTA from "@/components/landing/FinalCTA";
 
-export default async function Home() {
-  const [bootstrapResult, fixturesResult] = await Promise.all([
-    fetchBootstrap(),
-    fetchFixtures(),
-  ]);
-
+export default function Home() {
   return (
-    <CaptainAssistant
-      bootstrap={bootstrapResult.data}
-      fixtures={fixturesResult.data}
-      isStale={bootstrapResult.stale || fixturesResult.stale}
-    />
+    <div className="flex flex-col">
+      <LandingHero />
+      <HowItWorks />
+      <FeatureHighlights />
+      <WhyNotDashboard />
+      <FinalCTA />
+    </div>
   );
 }

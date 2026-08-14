@@ -11,9 +11,9 @@ const quicksand = Quicksand({
 });
 
 export const metadata: Metadata = {
-  title: "FPL Captain Assistant",
+  title: "FPL Assistant",
   description:
-    "Enter your FPL squad and get a captain pick with the reasoning behind it — xGI, fixture difficulty, and form, combined into one call.",
+    "Your FPL assistant for the decisions that matter each week — captain call, optimal XI, and clean sheet picks, decided for you with the reasoning behind every call.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
