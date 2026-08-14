@@ -1,15 +1,19 @@
 export default function WhyNotDashboard() {
   return (
-    <section className="relative overflow-hidden border-t border-transparent px-4 py-16 dark:border-white/10 md:py-24 lg:px-8">
-      {/* Faint pitch-circle echoes, tying back to the Optimal XI pitch
-          visual — restrained corner accents, not a generic gradient blob. */}
+    <section
+      style={{ background: "var(--stadium-glow-bg)" }}
+      className="relative overflow-hidden border-t border-transparent px-4 py-16 dark:border-white/10 md:py-24 lg:px-8"
+    >
+      {/* Pitch-circle echoes over the floodlit-pitch glow, tying back to
+          the Optimal XI pitch visual — restrained accents, not a generic
+          gradient blob. */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute -right-24 -top-24 hidden h-72 w-72 rounded-full border-2 border-brand-light/10 dark:border-pitch/10 lg:block"
+        className="pointer-events-none absolute -right-24 -top-24 hidden h-72 w-72 rounded-full border-2 border-brand-light/10 dark:border-pitch/15 lg:block"
       />
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute -bottom-32 -left-16 hidden h-56 w-56 rounded-full border-2 border-brand-light/10 dark:border-pitch/10 lg:block"
+        className="pointer-events-none absolute -bottom-32 -left-16 hidden h-56 w-56 rounded-full border-2 border-brand-light/10 dark:border-pitch/15 lg:block"
       />
 
       <div className="relative mx-auto max-w-3xl text-center">

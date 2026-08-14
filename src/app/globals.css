@@ -20,6 +20,11 @@
      neon --pitch brand accent, which reads wrong as an actual turf color. */
   --grass: #1e7a42;
   --grass-dark: #186b39;
+
+  /* Floodlit-pitch atmosphere for the "why not a dashboard" section —
+     transparent in light mode (that section is already bright there),
+     filled in under dark mode below. */
+  --stadium-glow-bg: transparent;
 }
 
 @theme inline {
@@ -44,6 +49,14 @@
     --background: #16213b;
     --foreground: #f4f4f5;
     --pitch-soft: #0e2e22;
+
+    /* Two soft floodlight glows (pitch-green + brand-purple) up top, and
+       a grass-tinted horizon fading in along the bottom — reads as a
+       pitch stretching away under stadium lights rather than a flat
+       navy panel. */
+    --stadium-glow-bg: radial-gradient(620px circle at 8% -15%, rgba(0, 255, 135, 0.16), transparent 60%),
+      radial-gradient(680px circle at 92% -10%, rgba(102, 10, 77, 0.55), transparent 55%),
+      linear-gradient(to bottom, transparent 55%, rgba(24, 107, 57, 0.35) 100%);
   }
 }
 
