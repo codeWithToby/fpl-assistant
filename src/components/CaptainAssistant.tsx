@@ -5,7 +5,7 @@ import type { BootstrapData, FixturesData, Player } from "@/lib/fpl/types";
 import { useSquadSelection, MAX_SQUAD_SIZE } from "@/hooks/useSquadSelection";
 import { computeCaptainScore } from "@/lib/fpl/scoring";
 import { computeOptimalXI } from "@/lib/fpl/optimalXI";
-import { getFinishedGameweekCount } from "@/lib/fpl/getCurrentGameweek";
+import { getCurrentGameweek, getFinishedGameweekCount } from "@/lib/fpl/getCurrentGameweek";
 import SquadBuilder from "./SquadBuilder";
 import CaptainRecommendations from "./CaptainRecommendations";
 import OptimalXI from "./OptimalXI";
@@ -34,6 +34,11 @@ export default function CaptainAssistant({ bootstrap, fixtures }: Props) {
 
   const finishedGameweekCount = useMemo(
     () => getFinishedGameweekCount(bootstrap.events),
+    [bootstrap.events]
+  );
+
+  const currentGameweekId = useMemo(
+    () => getCurrentGameweek(bootstrap.events)?.id ?? null,
     [bootstrap.events]
   );
 
@@ -85,6 +90,7 @@ export default function CaptainAssistant({ bootstrap, fixtures }: Props) {
             allPlayers={bootstrap.players}
             teams={bootstrap.teams}
             squadPlayers={squadPlayers}
+            currentGameweekId={currentGameweekId}
             onAdd={addPlayer}
             onRemove={removePlayer}
             onReplaceSquad={replaceSquad}

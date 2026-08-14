@@ -1,5 +1,6 @@
 import type { Player, Team } from "@/lib/fpl/types";
 import { MAX_SQUAD_SIZE } from "@/hooks/useSquadSelection";
+import ImportSquadForm from "./ImportSquadForm";
 import PlayerSearchCombobox from "./PlayerSearchCombobox";
 import PositionCountBadges from "./PositionCountBadges";
 import RandomSquadButton from "./RandomSquadButton";
@@ -9,6 +10,7 @@ interface Props {
   allPlayers: Player[];
   teams: Team[];
   squadPlayers: Player[];
+  currentGameweekId: number | null;
   onAdd: (id: number) => void;
   onRemove: (id: number) => void;
   onReplaceSquad: (ids: number[]) => void;
@@ -19,6 +21,7 @@ export default function SquadBuilder({
   allPlayers,
   teams,
   squadPlayers,
+  currentGameweekId,
   onAdd,
   onRemove,
   onReplaceSquad,
@@ -36,6 +39,14 @@ export default function SquadBuilder({
       </div>
 
       <PositionCountBadges squadPlayers={squadPlayers} />
+
+      <ImportSquadForm currentGameweekId={currentGameweekId} onImport={onReplaceSquad} />
+
+      <div className="flex items-center gap-2 text-xs font-medium text-zinc-400">
+        <span className="h-px flex-1 bg-zinc-200" />
+        or
+        <span className="h-px flex-1 bg-zinc-200" />
+      </div>
 
       <RandomSquadButton allPlayers={allPlayers} onGenerate={onReplaceSquad} />
 
