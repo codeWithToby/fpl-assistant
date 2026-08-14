@@ -1,53 +1,8 @@
 import type { BootstrapData, PlayerStatus } from "./types";
 import { withFallback } from "./fetchWithFallback";
+import { rawBootstrapSchema, parseOrThrow } from "./schemas";
 
 const BOOTSTRAP_URL = "https://fantasy.premierleague.com/api/bootstrap-static/";
-
-// Raw shapes are intentionally loose (Record<string, unknown> would be safer
-// but noisier here) — we only reach into the specific fields we trim below.
-interface RawPlayer {
-  id: number;
-  web_name: string;
-  team: number;
-  element_type: number;
-  now_cost: number;
-  minutes: number;
-  form: string;
-  selected_by_percent: string;
-  expected_goals_per_90: number;
-  expected_assists_per_90: number;
-  expected_goal_involvements_per_90: number;
-  expected_goals_conceded_per_90: number;
-  status: string;
-  chance_of_playing_next_round: number | null;
-}
-
-interface RawTeam {
-  id: number;
-  name: string;
-  short_name: string;
-}
-
-interface RawEvent {
-  id: number;
-  name: string;
-  is_current: boolean;
-  is_next: boolean;
-  finished: boolean;
-}
-
-interface RawElementType {
-  id: number;
-  singular_name: string;
-  squad_select: number;
-}
-
-interface RawBootstrap {
-  elements: RawPlayer[];
-  teams: RawTeam[];
-  events: RawEvent[];
-  element_types: RawElementType[];
-}
 
 async function fetchBootstrapRaw(): Promise<BootstrapData> {
   const res = await fetch(BOOTSTRAP_URL, {
@@ -59,7 +14,8 @@ async function fetchBootstrapRaw(): Promise<BootstrapData> {
     throw new Error(`FPL bootstrap-static request failed: ${res.status}`);
   }
 
-  const raw: RawBootstrap = await res.json();
+  const json = await res.json();
+  const raw = parseOrThrow(rawBootstrapSchema, json, "bootstrap-static");
 
   return {
     players: raw.elements.map((p) => ({

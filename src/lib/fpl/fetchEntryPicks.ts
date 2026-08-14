@@ -1,3 +1,5 @@
+import { rawPicksResponseSchema, parseOrThrow } from "./schemas";
+
 export type EntryPicksErrorCode = "team_not_found" | "no_picks_for_event" | "upstream_error";
 
 export interface EntryPicksSuccess {
@@ -6,10 +8,6 @@ export interface EntryPicksSuccess {
 
 export interface EntryPicksFailure {
   error: EntryPicksErrorCode;
-}
-
-interface RawPicksResponse {
-  picks: { element: number }[];
 }
 
 // Two-step lookup so we can tell "that Team ID doesn't exist" apart from
@@ -38,6 +36,11 @@ export async function fetchEntryPicks(
   if (picksRes.status === 404) return { error: "no_picks_for_event" };
   if (!picksRes.ok) return { error: "upstream_error" };
 
-  const data: RawPicksResponse = await picksRes.json();
-  return { playerIds: data.picks.map((p) => p.element) };
+  try {
+    const json = await picksRes.json();
+    const data = parseOrThrow(rawPicksResponseSchema, json, "entry picks");
+    return { playerIds: data.picks.map((p) => p.element) };
+  } catch {
+    return { error: "upstream_error" };
+  }
 }

@@ -1,19 +1,8 @@
 import type { FixturesData } from "./types";
 import { withFallback } from "./fetchWithFallback";
+import { rawFixturesSchema, parseOrThrow } from "./schemas";
 
 const FIXTURES_URL = "https://fantasy.premierleague.com/api/fixtures/";
-
-interface RawFixture {
-  id: number;
-  event: number | null;
-  kickoff_time: string | null;
-  started: boolean;
-  finished: boolean;
-  team_h: number;
-  team_a: number;
-  team_h_difficulty: number;
-  team_a_difficulty: number;
-}
 
 async function fetchFixturesRaw(): Promise<FixturesData> {
   const res = await fetch(FIXTURES_URL, {
@@ -25,7 +14,8 @@ async function fetchFixturesRaw(): Promise<FixturesData> {
     throw new Error(`FPL fixtures request failed: ${res.status}`);
   }
 
-  const raw: RawFixture[] = await res.json();
+  const json = await res.json();
+  const raw = parseOrThrow(rawFixturesSchema, json, "fixtures");
 
   return {
     fixtures: raw.map((f) => ({
