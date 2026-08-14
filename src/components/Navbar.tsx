@@ -8,7 +8,7 @@ const LINKS = [
   { href: "/", label: "Home" },
   { href: "/how-it-works", label: "How it works" },
   { href: "/squad", label: "Squad" },
-  { href: "/contact", label: "Contact us" },
+  // { href: "/contact", label: "Contact us" }, // temporarily disabled
 ];
 
 // Echoes the pitch-circle motif used throughout the app (Optimal XI,
