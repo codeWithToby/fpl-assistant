@@ -94,7 +94,7 @@ export default function CaptainAssistant({ bootstrap, fixtures, isStale = false 
           phone layout. The squad panel stays sticky on desktop so it's
           visible while scrolling through recommendations. */}
       <div className="mx-auto -mt-6 w-full max-w-7xl px-4 pb-12 md:-mt-8 lg:grid lg:grid-cols-[380px_1fr] lg:items-start lg:gap-8 lg:px-8">
-        <div className="lg:sticky lg:top-8">
+        <div className="lg:sticky lg:top-20">
           <SquadBuilder
             allPlayers={bootstrap.players}
             teams={bootstrap.teams}

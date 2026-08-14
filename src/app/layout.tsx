@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Quicksand } from "next/font/google";
+import Navbar from "@/components/Navbar";
 import "./globals.css";
 
 // Matches fpl.team's own choice of typeface — a rounded, friendly
@@ -19,7 +20,10 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="en" className={`${quicksand.variable} h-full antialiased`}>
-      <body className="min-h-full flex flex-col font-sans">{children}</body>
+      <body className="min-h-full flex flex-col font-sans">
+        <Navbar />
+        {children}
+      </body>
     </html>
   );
 }
