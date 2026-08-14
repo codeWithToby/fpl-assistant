@@ -22,9 +22,9 @@ export default function SquadBuilder({
   isFull,
 }: Props) {
   return (
-    <section className="flex flex-col gap-4">
+    <section className="flex flex-col gap-4 rounded-[10px] bg-background p-4 shadow-[0_8px_24px_-12px_rgba(0,0,0,0.35)] md:p-6">
       <div className="flex items-center justify-between">
-        <h2 className="text-xs font-semibold uppercase tracking-wide text-zinc-500">
+        <h2 className="text-xs font-bold uppercase tracking-wide text-zinc-500">
           Your squad
         </h2>
         <span className="text-sm font-medium text-zinc-500">

@@ -13,7 +13,7 @@ export default function PositionCountBadges({
         return (
           <span
             key={type}
-            className="border border-zinc-200 px-2.5 py-1 text-xs font-medium text-zinc-600"
+            className="rounded-full bg-zinc-100 px-3 py-1 text-xs font-bold text-zinc-600"
           >
             {POSITION_LABELS[type]} {count}
           </span>

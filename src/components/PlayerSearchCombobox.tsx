@@ -53,10 +53,10 @@ export default function PlayerSearchCombobox({
         placeholder={
           disabled ? "Squad full — remove a player to swap" : "Search a player to add…"
         }
-        className="w-full border border-zinc-300 px-4 py-3 text-base text-foreground placeholder:text-zinc-400 focus-visible:border-brand focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/20 disabled:bg-zinc-50 disabled:text-zinc-400"
+        className="w-full rounded-[10px] border border-zinc-300 px-4 py-3 text-base text-foreground placeholder:text-zinc-400 focus-visible:border-brand focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/20 disabled:bg-zinc-50 disabled:text-zinc-400"
       />
       {results.length > 0 && (
-        <ul className="absolute z-10 mt-1 max-h-72 w-full overflow-auto border border-zinc-200 bg-white shadow-sm">
+        <ul className="absolute z-10 mt-1 max-h-72 w-full overflow-auto rounded-[10px] border border-zinc-200 bg-background shadow-[0_8px_24px_-12px_rgba(0,0,0,0.35)]">
           {results.map((p) => {
             const team = teamsById.get(p.team);
             return (

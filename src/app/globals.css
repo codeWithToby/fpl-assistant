@@ -2,38 +2,41 @@
 
 :root {
   --background: #ffffff;
-  --foreground: #18181b;
+  --foreground: #161c27;
 
-  /* Deliberate palette, not Tailwind defaults: FPL's own brand pairing —
-     deep purple for structure/chrome, neon-pitch green as the single
-     "this is the call" accent (captain pick, TC flag). Everything else
-     is neutral zinc. */
-  --brand: #3d0142;
-  --brand-dark: #2a012e;
-  --pitch: #00c46a;
-  --pitch-soft: #e6faf0;
-  --risk: #dc2626;
-  --caution: #d97706;
+  /* FPL's own brand system, pulled directly from fpl.team's stylesheet
+     rather than guessed — deep purple + neon pitch-green is the
+     recognizable FPL pairing, sky-blue is their small-accent tertiary. */
+  --brand: #37003c;
+  --brand-light: #660a4d;
+  --pitch: #00ff87;
+  --pitch-dark: #00e77b;
+  --pitch-soft: #e3fff2;
+  --sky: #34d7fe;
+  --warning: #ffe65a;
+  --danger: #dc3545;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-brand: var(--brand);
-  --color-brand-dark: var(--brand-dark);
+  --color-brand-light: var(--brand-light);
   --color-pitch: var(--pitch);
+  --color-pitch-dark: var(--pitch-dark);
   --color-pitch-soft: var(--pitch-soft);
-  --color-risk: var(--risk);
-  --color-caution: var(--caution);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-sky: var(--sky);
+  --color-warning: var(--warning);
+  --color-risk: var(--danger);
+  --font-sans: var(--font-quicksand);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0b;
+    /* fpl.team's dark mode is navy, not neutral gray/black */
+    --background: #16213b;
     --foreground: #f4f4f5;
-    --pitch-soft: #052e1c;
+    --pitch-soft: #0e2e22;
   }
 }
 

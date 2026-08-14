@@ -1,14 +1,12 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Quicksand } from "next/font/google";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+// Matches fpl.team's own choice of typeface — a rounded, friendly
+// geometric sans that reads as "FPL" rather than "generic SaaS."
+const quicksand = Quicksand({
+  variable: "--font-quicksand",
+  weight: ["400", "500", "600", "700"],
   subsets: ["latin"],
 });
 
@@ -20,11 +18,8 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html
-      lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
-    >
-      <body className="min-h-full flex flex-col">{children}</body>
+    <html lang="en" className={`${quicksand.variable} h-full antialiased`}>
+      <body className="min-h-full flex flex-col font-sans">{children}</body>
     </html>
   );
 }

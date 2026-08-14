@@ -10,7 +10,7 @@ interface Props {
 export default function SquadList({ squadPlayers, teams, onRemove }: Props) {
   if (squadPlayers.length === 0) {
     return (
-      <p className="border border-dashed border-zinc-300 px-4 py-6 text-center text-sm text-zinc-500">
+      <p className="rounded-[10px] border border-dashed border-zinc-300 px-4 py-6 text-center text-sm text-zinc-500">
         Search above to add your 15 players.
       </p>
     );
@@ -19,7 +19,7 @@ export default function SquadList({ squadPlayers, teams, onRemove }: Props) {
   const teamsById = new Map(teams.map((t) => [t.id, t]));
 
   return (
-    <ul className="divide-y divide-zinc-200 border border-zinc-200">
+    <ul className="divide-y divide-zinc-200 overflow-hidden rounded-[10px] border border-zinc-200">
       {squadPlayers.map((p) => {
         const team = teamsById.get(p.team);
         return (
