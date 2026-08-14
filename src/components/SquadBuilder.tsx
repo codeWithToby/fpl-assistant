@@ -1,3 +1,6 @@
+"use client";
+
+import { useMemo, useState } from "react";
 import type { Player, Team } from "@/lib/fpl/types";
 import { MAX_SQUAD_SIZE } from "@/hooks/useSquadSelection";
 import ImportSquadForm from "./ImportSquadForm";
@@ -5,6 +8,7 @@ import PlayerSearchCombobox from "./PlayerSearchCombobox";
 import PositionCountBadges from "./PositionCountBadges";
 import RandomSquadButton from "./RandomSquadButton";
 import SquadList from "./SquadList";
+import SquadPitch from "./SquadPitch";
 
 interface Props {
   allPlayers: Player[];
@@ -27,6 +31,17 @@ export default function SquadBuilder({
   onReplaceSquad,
   isFull,
 }: Props) {
+  const [positionFilter, setPositionFilter] = useState<number | null>(null);
+  const [showFullList, setShowFullList] = useState(false);
+
+  const positionCounts = useMemo(() => {
+    const counts: Record<number, number> = {};
+    squadPlayers.forEach((p) => {
+      counts[p.elementType] = (counts[p.elementType] ?? 0) + 1;
+    });
+    return counts;
+  }, [squadPlayers]);
+
   return (
     <section className="flex flex-col gap-4 rounded-[10px] bg-background p-4 shadow-[0_8px_24px_-12px_rgba(0,0,0,0.35)] md:p-6">
       <div className="flex items-center justify-between">
@@ -54,11 +69,34 @@ export default function SquadBuilder({
         allPlayers={allPlayers}
         teams={teams}
         excludeIds={new Set(squadPlayers.map((p) => p.id))}
-        onSelect={onAdd}
+        onSelect={(id) => {
+          onAdd(id);
+          setPositionFilter(null);
+        }}
         disabled={isFull}
+        positionCounts={positionCounts}
+        positionFilter={positionFilter}
+        onClearPositionFilter={() => setPositionFilter(null)}
       />
 
-      <SquadList squadPlayers={squadPlayers} teams={teams} onRemove={onRemove} />
+      <SquadPitch
+        squadPlayers={squadPlayers}
+        teams={teams}
+        onSlotClick={setPositionFilter}
+        onRemove={onRemove}
+      />
+
+      {squadPlayers.length > 0 && (
+        <button
+          type="button"
+          onClick={() => setShowFullList((v) => !v)}
+          className="self-start text-xs font-bold uppercase tracking-wide text-brand-light underline-offset-2 hover:underline dark:text-pitch"
+        >
+          {showFullList ? "Hide full list" : "See full list"}
+        </button>
+      )}
+
+      {showFullList && <SquadList squadPlayers={squadPlayers} teams={teams} onRemove={onRemove} />}
     </section>
   );
 }

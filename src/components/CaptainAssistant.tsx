@@ -17,7 +17,9 @@ interface Props {
 }
 
 export default function CaptainAssistant({ bootstrap, fixtures, isStale = false }: Props) {
-  const { squadIds, addPlayer, removePlayer, replaceSquad, isFull } = useSquadSelection();
+  const { squadIds, addPlayer, removePlayer, replaceSquad, isFull } = useSquadSelection(
+    bootstrap.players
+  );
 
   const playersById = useMemo(() => {
     const map = new Map<number, Player>();
