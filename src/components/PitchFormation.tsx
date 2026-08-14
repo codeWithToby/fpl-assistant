@@ -1,49 +1,10 @@
 import type { OptimalXIResult } from "@/lib/fpl/types";
 import PitchPlayerCard from "./PitchPlayerCard";
+import PitchMarkings from "./PitchMarkings";
 
 // Attacking direction goes up the pitch, so rows render FWD → MID → DEF → GK
 // top to bottom — the reverse of POSITION_ORDER, which is GK-first.
 const PITCH_ROW_ORDER = [4, 3, 2, 1] as const;
-
-// Tailwind's compiler needs full literal class strings, not interpolated
-// ones — so top/bottom each get their own explicit set of classes rather
-// than building "top-0"/"border-t-0" from a variable.
-function GoalBox({ edge }: { edge: "top" | "bottom" }) {
-  if (edge === "top") {
-    return (
-      <>
-        <div
-          className="pointer-events-none absolute left-1/2 top-0 -translate-x-1/2 border-2 border-t-0 border-white/25"
-          style={{ width: "42%", height: "13%" }}
-        />
-        <div
-          className="pointer-events-none absolute left-1/2 top-0 -translate-x-1/2 border-2 border-t-0 border-white/25"
-          style={{ width: "20%", height: "5.5%" }}
-        />
-        <div
-          className="pointer-events-none absolute left-1/2 top-0 h-1 -translate-x-1/2 rounded-full bg-white/40"
-          style={{ width: "12%" }}
-        />
-      </>
-    );
-  }
-  return (
-    <>
-      <div
-        className="pointer-events-none absolute bottom-0 left-1/2 -translate-x-1/2 border-2 border-b-0 border-white/25"
-        style={{ width: "42%", height: "13%" }}
-      />
-      <div
-        className="pointer-events-none absolute bottom-0 left-1/2 -translate-x-1/2 border-2 border-b-0 border-white/25"
-        style={{ width: "20%", height: "5.5%" }}
-      />
-      <div
-        className="pointer-events-none absolute bottom-0 left-1/2 h-1 -translate-x-1/2 rounded-full bg-white/40"
-        style={{ width: "12%" }}
-      />
-    </>
-  );
-}
 
 export default function PitchFormation({ result }: { result: OptimalXIResult }) {
   return (
@@ -55,14 +16,7 @@ export default function PitchFormation({ result }: { result: OptimalXIResult }) 
             "repeating-linear-gradient(180deg, var(--grass) 0px, var(--grass) 44px, var(--grass-dark) 44px, var(--grass-dark) 88px)",
         }}
       >
-        {/* Pitch markings — touchline, halfway line, center circle, and a
-            penalty box / six-yard box / goal mouth at each end. Purely
-            atmospheric, but they're what makes this read as a pitch. */}
-        <div className="pointer-events-none absolute left-1/2 top-1/2 h-20 w-20 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-white/25 sm:h-28 sm:w-28" />
-        <div className="pointer-events-none absolute left-1/2 top-1/2 h-1.5 w-1.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-white/40" />
-        <div className="pointer-events-none absolute left-0 top-1/2 h-px w-full -translate-y-1/2 bg-white/25" />
-        <GoalBox edge="top" />
-        <GoalBox edge="bottom" />
+        <PitchMarkings />
 
         <div className="relative flex h-full min-h-[480px] flex-col justify-between py-4 sm:min-h-[600px] sm:py-8">
           {PITCH_ROW_ORDER.map((type) => {

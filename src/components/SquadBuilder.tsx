@@ -1,6 +1,4 @@
-"use client";
-
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import type { Player, Team } from "@/lib/fpl/types";
 import { MAX_SQUAD_SIZE } from "@/hooks/useSquadSelection";
 import ImportSquadForm from "./ImportSquadForm";
@@ -8,7 +6,6 @@ import PlayerSearchCombobox from "./PlayerSearchCombobox";
 import PositionCountBadges from "./PositionCountBadges";
 import RandomSquadButton from "./RandomSquadButton";
 import SquadList from "./SquadList";
-import SquadPitch from "./SquadPitch";
 
 interface Props {
   allPlayers: Player[];
@@ -18,7 +15,10 @@ interface Props {
   onAdd: (id: number) => void;
   onRemove: (id: number) => void;
   onReplaceSquad: (ids: number[]) => void;
+  onClearSquad: () => void;
   isFull: boolean;
+  positionFilter: number | null;
+  onClearPositionFilter: () => void;
 }
 
 export default function SquadBuilder({
@@ -29,11 +29,11 @@ export default function SquadBuilder({
   onAdd,
   onRemove,
   onReplaceSquad,
+  onClearSquad,
   isFull,
+  positionFilter,
+  onClearPositionFilter,
 }: Props) {
-  const [positionFilter, setPositionFilter] = useState<number | null>(null);
-  const [showFullList, setShowFullList] = useState(false);
-
   const positionCounts = useMemo(() => {
     const counts: Record<number, number> = {};
     squadPlayers.forEach((p) => {
@@ -48,9 +48,20 @@ export default function SquadBuilder({
         <h2 className="text-xs font-bold uppercase tracking-wide text-zinc-500">
           Your squad
         </h2>
-        <span className="text-sm font-medium text-zinc-500">
-          {squadPlayers.length}/{MAX_SQUAD_SIZE}
-        </span>
+        <div className="flex items-center gap-3">
+          {squadPlayers.length > 0 && (
+            <button
+              type="button"
+              onClick={onClearSquad}
+              className="text-xs font-semibold text-zinc-400 transition-colors hover:text-risk"
+            >
+              Clear
+            </button>
+          )}
+          <span className="text-sm font-medium text-zinc-500">
+            {squadPlayers.length}/{MAX_SQUAD_SIZE}
+          </span>
+        </div>
       </div>
 
       <PositionCountBadges squadPlayers={squadPlayers} />
@@ -69,34 +80,14 @@ export default function SquadBuilder({
         allPlayers={allPlayers}
         teams={teams}
         excludeIds={new Set(squadPlayers.map((p) => p.id))}
-        onSelect={(id) => {
-          onAdd(id);
-          setPositionFilter(null);
-        }}
+        onSelect={onAdd}
         disabled={isFull}
         positionCounts={positionCounts}
         positionFilter={positionFilter}
-        onClearPositionFilter={() => setPositionFilter(null)}
+        onClearPositionFilter={onClearPositionFilter}
       />
 
-      <SquadPitch
-        squadPlayers={squadPlayers}
-        teams={teams}
-        onSlotClick={setPositionFilter}
-        onRemove={onRemove}
-      />
-
-      {squadPlayers.length > 0 && (
-        <button
-          type="button"
-          onClick={() => setShowFullList((v) => !v)}
-          className="self-start text-xs font-bold uppercase tracking-wide text-brand-light underline-offset-2 hover:underline dark:text-pitch"
-        >
-          {showFullList ? "Hide full list" : "See full list"}
-        </button>
-      )}
-
-      {showFullList && <SquadList squadPlayers={squadPlayers} teams={teams} onRemove={onRemove} />}
+      <SquadList squadPlayers={squadPlayers} teams={teams} onRemove={onRemove} />
     </section>
   );
 }

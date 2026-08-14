@@ -1,5 +1,6 @@
 import type { Player, Team } from "@/lib/fpl/types";
 import { POSITION_LABELS } from "@/lib/fpl/constants";
+import PitchMarkings from "./PitchMarkings";
 
 const GK = 1;
 const DEF = 2;
@@ -59,14 +60,16 @@ function FilledSlot({
       type="button"
       onClick={() => onRemove(player.id)}
       aria-label={`Remove ${player.webName}`}
-      className="flex w-14 flex-col items-center gap-0.5 rounded-[8px] bg-white px-1 py-1.5 text-center shadow-[0_4px_10px_-4px_rgba(0,0,0,0.5)] transition-transform hover:scale-[1.04] active:scale-95 sm:w-16"
+      className="flex w-20 flex-col items-center gap-1 text-center transition-transform hover:scale-[1.03] active:scale-95 sm:w-24"
     >
-      <span className="text-[10px] font-bold leading-tight text-brand sm:text-[11px]">
-        {player.webName}
-      </span>
-      <span className="text-[8px] font-medium text-zinc-500 sm:text-[9px]">
-        {team?.shortName ?? "?"}
-      </span>
+      <div className="w-full rounded-[8px] bg-white px-1.5 py-1 shadow-[0_4px_10px_-4px_rgba(0,0,0,0.5)]">
+        <p className="text-[11px] font-bold leading-tight text-brand sm:text-xs">
+          {player.webName}
+        </p>
+        <p className="truncate text-[9px] font-medium text-zinc-500 sm:text-[10px]">
+          {team?.shortName ?? "?"}
+        </p>
+      </div>
     </button>
   );
 }
@@ -90,10 +93,10 @@ function EmptySlot({
       type="button"
       onClick={() => onClick(type)}
       aria-label={`Add ${POSITION_LABELS[type]} player`}
-      className={`flex w-14 flex-col items-center justify-center gap-0.5 rounded-[8px] border-2 border-dashed py-2.5 transition-colors sm:w-16 ${style}`}
+      className={`flex w-20 flex-col items-center justify-center gap-1 rounded-[8px] border-2 border-dashed py-3 transition-colors sm:w-24 ${style}`}
     >
-      <span className="text-sm leading-none">+</span>
-      <span className="text-[9px] font-bold uppercase tracking-wide">{POSITION_LABELS[type]}</span>
+      <span className="text-base leading-none">+</span>
+      <span className="text-[10px] font-bold uppercase tracking-wide">{POSITION_LABELS[type]}</span>
     </button>
   );
 }
@@ -105,26 +108,25 @@ interface Props {
   onRemove: (id: number) => void;
 }
 
-export default function SquadPitch({ squadPlayers, teams, onSlotClick, onRemove }: Props) {
+export default function BuildPitch({ squadPlayers, teams, onSlotClick, onRemove }: Props) {
   const teamsById = new Map(teams.map((t) => [t.id, t]));
   const pitchByType = buildPitchSlotsByType(squadPlayers);
   const benchSlots = buildBenchSlots(squadPlayers);
 
   return (
-    <div className="flex flex-col gap-3">
+    <div className="flex flex-col gap-4">
       <div
-        className="relative min-h-[300px] overflow-hidden rounded-[10px] border-2 border-white/25 p-3"
+        className="relative min-h-[520px] overflow-hidden rounded-[10px] border-2 border-white/25 p-3 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.15)] sm:min-h-[640px] sm:p-5"
         style={{
           background:
-            "repeating-linear-gradient(180deg, var(--grass) 0px, var(--grass) 10px, var(--grass-dark) 10px, var(--grass-dark) 20px)",
+            "repeating-linear-gradient(180deg, var(--grass) 0px, var(--grass) 44px, var(--grass-dark) 44px, var(--grass-dark) 88px)",
         }}
       >
-        <div className="pointer-events-none absolute left-1/2 top-1/2 h-16 w-16 -translate-x-1/2 -translate-y-1/2 rounded-full border border-white/20" />
-        <div className="pointer-events-none absolute left-0 top-1/2 h-px w-full -translate-y-1/2 bg-white/20" />
+        <PitchMarkings />
 
-        <div className="relative flex h-full min-h-[264px] flex-col justify-between py-2">
+        <div className="relative flex h-full min-h-[480px] flex-col justify-between py-4 sm:min-h-[600px] sm:py-8">
           {PITCH_ROW_ORDER.map((type) => (
-            <div key={type} className="flex flex-wrap items-start justify-evenly gap-2">
+            <div key={type} className="flex flex-wrap items-start justify-evenly gap-2 px-1">
               {pitchByType[type].map((slot, i) =>
                 slot.player ? (
                   <FilledSlot
@@ -142,11 +144,9 @@ export default function SquadPitch({ squadPlayers, teams, onSlotClick, onRemove 
         </div>
       </div>
 
-      <div className="flex flex-col gap-1.5">
-        <p className="text-xs font-bold uppercase tracking-wide text-zinc-400 dark:text-zinc-500">
-          Bench
-        </p>
-        <div className="flex flex-wrap justify-evenly gap-2 rounded-[10px] border border-zinc-200 bg-background p-3 dark:border-zinc-700">
+      <div className="flex flex-col gap-2">
+        <h3 className="text-xs font-bold uppercase tracking-wide text-zinc-400">Bench</h3>
+        <div className="flex flex-wrap gap-3 rounded-[10px] border border-zinc-200 bg-background p-3 dark:border-zinc-700">
           {benchSlots.map((slot, i) =>
             slot.player ? (
               <FilledSlot

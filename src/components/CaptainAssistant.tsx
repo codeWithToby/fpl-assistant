@@ -1,12 +1,13 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import type { BootstrapData, FixturesData, Player } from "@/lib/fpl/types";
 import { useSquadSelection, MAX_SQUAD_SIZE } from "@/hooks/useSquadSelection";
 import { computeCaptainScore } from "@/lib/fpl/scoring";
 import { computeOptimalXI } from "@/lib/fpl/optimalXI";
 import { getCurrentGameweek, getFinishedGameweekCount } from "@/lib/fpl/getCurrentGameweek";
 import SquadBuilder from "./SquadBuilder";
+import SquadProgress from "./SquadProgress";
 import CaptainRecommendations from "./CaptainRecommendations";
 import OptimalXI from "./OptimalXI";
 
@@ -20,6 +21,27 @@ export default function CaptainAssistant({ bootstrap, fixtures, isStale = false 
   const { squadIds, addPlayer, removePlayer, replaceSquad, isFull } = useSquadSelection(
     bootstrap.players
   );
+
+  const [positionFilter, setPositionFilter] = useState<number | null>(null);
+
+  // A pitch-slot click on the empty build pitch sets this filter so the
+  // sidebar search jumps straight to that position; any bulk squad change
+  // (add, random, import, clear) should drop a now-stale filter.
+  const handleAdd = (id: number) => {
+    addPlayer(id);
+    setPositionFilter(null);
+  };
+
+  const handleReplaceSquad = (ids: number[]) => {
+    replaceSquad(ids);
+    setPositionFilter(null);
+  };
+
+  const handleClearSquad = () => {
+    if (window.confirm("Clear your entire squad? This can't be undone.")) {
+      handleReplaceSquad([]);
+    }
+  };
 
   const playersById = useMemo(() => {
     const map = new Map<number, Player>();
@@ -102,10 +124,13 @@ export default function CaptainAssistant({ bootstrap, fixtures, isStale = false 
             teams={bootstrap.teams}
             squadPlayers={squadPlayers}
             currentGameweekId={currentGameweekId}
-            onAdd={addPlayer}
+            onAdd={handleAdd}
             onRemove={removePlayer}
-            onReplaceSquad={replaceSquad}
+            onReplaceSquad={handleReplaceSquad}
+            onClearSquad={handleClearSquad}
             isFull={isFull}
+            positionFilter={positionFilter}
+            onClearPositionFilter={() => setPositionFilter(null)}
           />
         </div>
 
@@ -114,13 +139,16 @@ export default function CaptainAssistant({ bootstrap, fixtures, isStale = false 
             <CaptainRecommendations ranked={ranked} noFixture={noFixture} />
           )}
 
-          {optimalXI && <OptimalXI result={optimalXI} />}
-
-          {squadPlayers.length > 0 && !isSquadComplete && (
-            <p className="text-center text-xs text-zinc-400">
-              Add all 15 players to see your optimal starting XI and formation.
-            </p>
+          {!isSquadComplete && (
+            <SquadProgress
+              squadPlayers={squadPlayers}
+              teams={bootstrap.teams}
+              onSlotClick={setPositionFilter}
+              onRemove={removePlayer}
+            />
           )}
+
+          {optimalXI && <OptimalXI result={optimalXI} />}
         </div>
       </div>
     </div>
