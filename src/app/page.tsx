@@ -3,10 +3,16 @@ import { fetchBootstrap } from "@/lib/fpl/fetchBootstrap";
 import { fetchFixtures } from "@/lib/fpl/fetchFixtures";
 
 export default async function Home() {
-  const [bootstrap, fixtures] = await Promise.all([
+  const [bootstrapResult, fixturesResult] = await Promise.all([
     fetchBootstrap(),
     fetchFixtures(),
   ]);
 
-  return <CaptainAssistant bootstrap={bootstrap} fixtures={fixtures} />;
+  return (
+    <CaptainAssistant
+      bootstrap={bootstrapResult.data}
+      fixtures={fixturesResult.data}
+      isStale={bootstrapResult.stale || fixturesResult.stale}
+    />
+  );
 }

@@ -1,4 +1,5 @@
 import type { FixturesData } from "./types";
+import { withFallback } from "./fetchWithFallback";
 
 const FIXTURES_URL = "https://fantasy.premierleague.com/api/fixtures/";
 
@@ -14,7 +15,7 @@ interface RawFixture {
   team_a_difficulty: number;
 }
 
-export async function fetchFixtures(): Promise<FixturesData> {
+async function fetchFixturesRaw(): Promise<FixturesData> {
   const res = await fetch(FIXTURES_URL, {
     headers: { "User-Agent": "fpl-assistant" },
     next: { revalidate: 1800 },
@@ -40,3 +41,7 @@ export async function fetchFixtures(): Promise<FixturesData> {
     })),
   };
 }
+
+// Serves last-known-good fixtures if the live fetch fails. See
+// fetchWithFallback.ts for the "why".
+export const fetchFixtures = withFallback(fetchFixturesRaw);

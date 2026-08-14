@@ -13,9 +13,10 @@ import OptimalXI from "./OptimalXI";
 interface Props {
   bootstrap: BootstrapData;
   fixtures: FixturesData;
+  isStale?: boolean;
 }
 
-export default function CaptainAssistant({ bootstrap, fixtures }: Props) {
+export default function CaptainAssistant({ bootstrap, fixtures, isStale = false }: Props) {
   const { squadIds, addPlayer, removePlayer, replaceSquad, isFull } = useSquadSelection();
 
   const playersById = useMemo(() => {
@@ -79,6 +80,14 @@ export default function CaptainAssistant({ bootstrap, fixtures }: Props) {
           </p>
         </div>
       </header>
+
+      {isStale && (
+        <div className="border-b border-amber-200 bg-amber-50 px-4 py-2.5 text-center lg:px-8">
+          <p className="text-xs font-medium text-amber-800">
+            Showing cached data — live FPL data is temporarily unavailable.
+          </p>
+        </div>
+      )}
 
       {/* Single column on mobile; sidebar (squad) + main content (insights)
           on wide screens, like a normal web app rather than a stretched

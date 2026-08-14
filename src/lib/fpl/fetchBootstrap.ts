@@ -1,4 +1,5 @@
 import type { BootstrapData, PlayerStatus } from "./types";
+import { withFallback } from "./fetchWithFallback";
 
 const BOOTSTRAP_URL = "https://fantasy.premierleague.com/api/bootstrap-static/";
 
@@ -48,7 +49,7 @@ interface RawBootstrap {
   element_types: RawElementType[];
 }
 
-export async function fetchBootstrap(): Promise<BootstrapData> {
+async function fetchBootstrapRaw(): Promise<BootstrapData> {
   const res = await fetch(BOOTSTRAP_URL, {
     headers: { "User-Agent": "fpl-assistant" },
     next: { revalidate: 3600 },
@@ -96,3 +97,8 @@ export async function fetchBootstrap(): Promise<BootstrapData> {
     })),
   };
 }
+
+// Serves last-known-good bootstrap data if the live fetch fails (FPL
+// down, blocked, or a schema-breaking change on their end) rather than
+// crashing the page. See fetchWithFallback.ts for the "why".
+export const fetchBootstrap = withFallback(fetchBootstrapRaw);
