@@ -1,4 +1,5 @@
 import type {
+  CaptainScoreBreakdown,
   Fixture,
   OptimalXIResult,
   Player,
@@ -26,12 +27,18 @@ function rotationNoteFor(
     : "Limited recent minutes — rotation risk";
 }
 
-function buildSlot(
+// The "how good a starting-XI pick is this player right now" number — same
+// captain score for MID/FWD, but blended with clean sheet probability for
+// GK/DEF, since attacking output barely applies to them. Squad-agnostic:
+// doesn't care whether the player is in anyone's 15, which is what lets
+// teamOfTheWeek.ts reuse it to rank the entire player pool, not just a
+// user's own squad.
+export function computePlayerValue(
   player: Player,
   teams: Team[],
   fixtures: Fixture[],
   finishedGameweekCount: number
-): XISlot {
+): { value: number; cleanSheetProbability: number | null; captain: CaptainScoreBreakdown } {
   const captain = computeCaptainScore(player, teams, fixtures, finishedGameweekCount);
 
   let value: number;
@@ -47,6 +54,22 @@ function buildSlot(
   } else {
     value = captain.totalScore;
   }
+
+  return { value, cleanSheetProbability, captain };
+}
+
+function buildSlot(
+  player: Player,
+  teams: Team[],
+  fixtures: Fixture[],
+  finishedGameweekCount: number
+): XISlot {
+  const { value, cleanSheetProbability, captain } = computePlayerValue(
+    player,
+    teams,
+    fixtures,
+    finishedGameweekCount
+  );
 
   return {
     playerId: player.id,

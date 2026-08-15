@@ -6,14 +6,19 @@ import { POSITION_LABELS, POSITION_ORDER } from "@/lib/fpl/constants";
 import PitchFormation from "./PitchFormation";
 import XISlotRow from "./XISlotRow";
 
-export default function OptimalXI({ result }: { result: OptimalXIResult }) {
+interface Props {
+  result: OptimalXIResult;
+  title?: string;
+}
+
+export default function OptimalXI({ result, title = "Optimal starting XI" }: Props) {
   const [showDetail, setShowDetail] = useState(false);
 
   return (
     <section className="flex flex-col gap-4 rounded-[10px] bg-background p-4 shadow-[0_8px_24px_-12px_rgba(0,0,0,0.35)] md:p-6">
       <div className="flex items-center justify-between">
         <h2 className="text-sm font-bold uppercase tracking-wide text-brand dark:text-pitch">
-          Optimal starting XI
+          {title}
         </h2>
         <span className="rounded-full bg-brand px-3 py-1 text-xs font-bold text-white">
           {result.formation}
