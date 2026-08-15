@@ -1,13 +1,46 @@
 "use client";
 
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 import type { CaptainScoreBreakdown } from "@/lib/fpl/types";
 import TripleCaptainBadge from "./TripleCaptainBadge";
+import Tooltip from "./Tooltip";
 
 interface Props {
   breakdown: CaptainScoreBreakdown;
   rank: number;
   featured?: boolean;
+}
+
+const FDR_XGI_PATTERN = /(FDR \d\/5)|([\d.]+ xGI\/90)/g;
+
+// Wraps the FDR/xGI shorthand that scoring.ts bakes into oneLinerReason and
+// reasoning[] with a tap/hover definition, right where a reader hits it —
+// the only other place either term is explained is the separate How It
+// Works page, which means leaving the app mid-decision to look it up.
+function annotateJargon(text: string): ReactNode[] {
+  const parts: ReactNode[] = [];
+  let lastIndex = 0;
+  let key = 0;
+  for (const match of text.matchAll(FDR_XGI_PATTERN)) {
+    const index = match.index ?? 0;
+    if (index > lastIndex) parts.push(text.slice(lastIndex, index));
+    const isFdr = match[1] !== undefined;
+    parts.push(
+      <Tooltip
+        key={key++}
+        label={
+          isFdr
+            ? "Fixture Difficulty Rating — how tough the next opponent is, on the FPL's own 1 (easiest) to 5 (hardest) scale."
+            : "Expected Goal Involvement per 90 minutes — how often they're involved in a goal, scoring or assisting, based on the quality of chances they're getting."
+        }
+      >
+        {match[0]}
+      </Tooltip>
+    );
+    lastIndex = index + match[0].length;
+  }
+  if (lastIndex < text.length) parts.push(text.slice(lastIndex));
+  return parts;
 }
 
 export default function CaptainCard({ breakdown, rank, featured = false }: Props) {
@@ -39,7 +72,7 @@ export default function CaptainCard({ breakdown, rank, featured = false }: Props
         )}
 
         <p className="mt-3 text-sm leading-relaxed text-white/90">
-          {breakdown.oneLinerReason}
+          {annotateJargon(breakdown.oneLinerReason)}
         </p>
 
         <button
@@ -61,7 +94,7 @@ export default function CaptainCard({ breakdown, rank, featured = false }: Props
                     : "text-white/80"
                 }`}
               >
-                {line}
+                {annotateJargon(line)}
               </li>
             ))}
           </ul>
@@ -98,7 +131,7 @@ export default function CaptainCard({ breakdown, rank, featured = false }: Props
       )}
 
       <p className="mt-2 text-sm leading-relaxed text-zinc-600">
-        {breakdown.oneLinerReason}
+        {annotateJargon(breakdown.oneLinerReason)}
       </p>
     </div>
   );
