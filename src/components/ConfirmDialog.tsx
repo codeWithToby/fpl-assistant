@@ -1,5 +1,7 @@
 "use client";
 
+import { createPortal } from "react-dom";
+
 interface Props {
   message: string;
   onConfirm: () => void;
@@ -7,7 +9,11 @@ interface Props {
 }
 
 export default function ConfirmDialog({ message, onConfirm, onCancel }: Props) {
-  return (
+  // Portaled straight to <body> — callers can sit inside a `position:
+  // sticky` ancestor (the squad sidebar does), which unconditionally opens
+  // its own stacking context and would otherwise trap this fixed overlay
+  // behind later page content instead of on top of it.
+  return createPortal(
     <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4"
       onClick={onCancel}
@@ -36,6 +42,7 @@ export default function ConfirmDialog({ message, onConfirm, onCancel }: Props) {
           </button>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
