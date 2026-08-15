@@ -60,9 +60,14 @@ export default function CaptainCard({ breakdown, rank, featured = false }: Props
               <span className="font-medium text-white/60">{breakdown.teamShortName}</span>
             </h3>
           </div>
-          <span className="text-3xl font-bold tabular-nums text-pitch">
-            {breakdown.totalScore}
-          </span>
+          <div className="flex flex-none flex-col items-center rounded-[10px] bg-pitch px-3 py-1.5">
+            <span className="text-2xl font-bold leading-none tabular-nums text-brand">
+              {breakdown.totalScore}
+            </span>
+            <span className="mt-0.5 text-[9px] font-bold uppercase tracking-wide text-brand/70">
+              Score
+            </span>
+          </div>
         </div>
 
         {breakdown.isTripleCaptainCandidate && (

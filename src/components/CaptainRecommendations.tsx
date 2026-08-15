@@ -42,7 +42,7 @@ export default function CaptainRecommendations({ ranked, noFixture }: Props) {
               <button
                 type="button"
                 onClick={() => setShowRest((v) => !v)}
-                className="text-xs font-bold uppercase tracking-wide text-brand-light hover:text-brand"
+                className="text-xs font-bold uppercase tracking-wide text-brand-light hover:text-brand dark:text-pitch dark:hover:text-pitch-dark"
               >
                 {showRest
                   ? "Hide rest of squad"
