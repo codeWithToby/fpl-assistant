@@ -7,12 +7,17 @@ import { generateRandomSquad } from "@/lib/fpl/randomSquad";
 interface Props {
   allPlayers: Player[];
   onGenerate: (ids: number[]) => void;
+  hasSquad: boolean;
 }
 
-export default function RandomSquadButton({ allPlayers, onGenerate }: Props) {
+export default function RandomSquadButton({ allPlayers, onGenerate, hasSquad }: Props) {
   const [failed, setFailed] = useState(false);
 
   const handleClick = () => {
+    if (hasSquad && !window.confirm("Replace your current squad with a random one? This can't be undone.")) {
+      return;
+    }
+
     const squad = generateRandomSquad(allPlayers);
     if (!squad) {
       setFailed(true);

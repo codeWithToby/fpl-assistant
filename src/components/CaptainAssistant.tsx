@@ -19,9 +19,8 @@ interface Props {
 }
 
 export default function CaptainAssistant({ bootstrap, fixtures, isStale = false }: Props) {
-  const { squadIds, addPlayer, removePlayer, replaceSquad, isFull } = useSquadSelection(
-    bootstrap.players
-  );
+  const { squadIds, addPlayer, removePlayer, replaceSquad, isFull, remainingBudget } =
+    useSquadSelection(bootstrap.players);
 
   const [positionFilter, setPositionFilter] = useState<number | null>(null);
 
@@ -143,6 +142,7 @@ export default function CaptainAssistant({ bootstrap, fixtures, isStale = false 
             isFull={isFull}
             positionFilter={positionFilter}
             onClearPositionFilter={() => setPositionFilter(null)}
+            remainingBudget={remainingBudget}
           />
         </div>
 

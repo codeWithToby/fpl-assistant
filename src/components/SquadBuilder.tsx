@@ -1,6 +1,7 @@
 import { useMemo } from "react";
 import type { Player, Team } from "@/lib/fpl/types";
 import { MAX_SQUAD_SIZE } from "@/hooks/useSquadSelection";
+import { formatPrice } from "@/lib/fpl/constants";
 import ImportSquadForm from "./ImportSquadForm";
 import PlayerSearchCombobox from "./PlayerSearchCombobox";
 import PositionCountBadges from "./PositionCountBadges";
@@ -19,6 +20,7 @@ interface Props {
   isFull: boolean;
   positionFilter: number | null;
   onClearPositionFilter: () => void;
+  remainingBudget: number;
 }
 
 export default function SquadBuilder({
@@ -33,6 +35,7 @@ export default function SquadBuilder({
   isFull,
   positionFilter,
   onClearPositionFilter,
+  remainingBudget,
 }: Props) {
   const positionCounts = useMemo(() => {
     const counts: Record<number, number> = {};
@@ -64,9 +67,18 @@ export default function SquadBuilder({
         </div>
       </div>
 
-      <PositionCountBadges squadPlayers={squadPlayers} />
+      <div className="flex items-center justify-between gap-2">
+        <PositionCountBadges squadPlayers={squadPlayers} />
+        <span className="whitespace-nowrap text-xs font-bold text-zinc-500">
+          {formatPrice(remainingBudget)} left
+        </span>
+      </div>
 
-      <ImportSquadForm currentGameweekId={currentGameweekId} onImport={onReplaceSquad} />
+      <ImportSquadForm
+        currentGameweekId={currentGameweekId}
+        onImport={onReplaceSquad}
+        hasSquad={squadPlayers.length > 0}
+      />
 
       <div className="flex items-center gap-2 text-xs font-medium text-zinc-400">
         <span className="h-px flex-1 bg-zinc-200" />
@@ -74,7 +86,11 @@ export default function SquadBuilder({
         <span className="h-px flex-1 bg-zinc-200" />
       </div>
 
-      <RandomSquadButton allPlayers={allPlayers} onGenerate={onReplaceSquad} />
+      <RandomSquadButton
+        allPlayers={allPlayers}
+        onGenerate={onReplaceSquad}
+        hasSquad={squadPlayers.length > 0}
+      />
 
       <PlayerSearchCombobox
         allPlayers={allPlayers}
@@ -85,6 +101,7 @@ export default function SquadBuilder({
         positionCounts={positionCounts}
         positionFilter={positionFilter}
         onClearPositionFilter={onClearPositionFilter}
+        remainingBudget={remainingBudget}
       />
 
       <SquadList squadPlayers={squadPlayers} teams={teams} onRemove={onRemove} />

@@ -16,6 +16,7 @@ interface Props {
   positionCounts: Record<number, number>;
   positionFilter: number | null;
   onClearPositionFilter: () => void;
+  remainingBudget: number; // tenths of £m, matching Player.nowCost
 }
 
 export default function PlayerSearchCombobox({
@@ -27,6 +28,7 @@ export default function PlayerSearchCombobox({
   positionCounts,
   positionFilter,
   onClearPositionFilter,
+  remainingBudget,
 }: Props) {
   const [query, setQuery] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
@@ -45,7 +47,8 @@ export default function PlayerSearchCombobox({
     const eligible = allPlayers
       .filter((p) => !excludeIds.has(p.id))
       .filter((p) => (positionCounts[p.elementType] ?? 0) < SQUAD_POSITION_NEEDS[p.elementType])
-      .filter((p) => positionFilter === null || p.elementType === positionFilter);
+      .filter((p) => positionFilter === null || p.elementType === positionFilter)
+      .filter((p) => p.nowCost <= remainingBudget);
 
     // With a position already chosen (via a pitch-slot click), show the
     // top owned players in that position immediately rather than making
@@ -66,7 +69,7 @@ export default function PlayerSearchCombobox({
       })
       .sort((a, b) => b.selectedByPercent - a.selectedByPercent)
       .slice(0, MAX_RESULTS);
-  }, [query, allPlayers, excludeIds, teamsById, positionCounts, positionFilter]);
+  }, [query, allPlayers, excludeIds, teamsById, positionCounts, positionFilter, remainingBudget]);
 
   return (
     <div className="relative">

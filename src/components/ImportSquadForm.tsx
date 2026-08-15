@@ -5,9 +5,10 @@ import { useState, type FormEvent } from "react";
 interface Props {
   currentGameweekId: number | null;
   onImport: (ids: number[]) => void;
+  hasSquad: boolean;
 }
 
-export default function ImportSquadForm({ currentGameweekId, onImport }: Props) {
+export default function ImportSquadForm({ currentGameweekId, onImport, hasSquad }: Props) {
   const [teamId, setTeamId] = useState("");
   const [status, setStatus] = useState<"idle" | "loading" | "error">("idle");
   const [errorMessage, setErrorMessage] = useState("");
@@ -37,6 +38,14 @@ export default function ImportSquadForm({ currentGameweekId, onImport }: Props) 
       if (!res.ok) {
         setStatus("error");
         setErrorMessage(data.error ?? "Something went wrong.");
+        return;
+      }
+
+      if (
+        hasSquad &&
+        !window.confirm("Replace your current squad with the imported one? This can't be undone.")
+      ) {
+        setStatus("idle");
         return;
       }
 
