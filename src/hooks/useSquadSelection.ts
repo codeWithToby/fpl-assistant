@@ -99,5 +99,6 @@ export function useSquadSelection(allPlayers: Player[]) {
     replaceSquad,
     isFull: squadIds.length >= MAX_SQUAD_SIZE,
     remainingBudget,
+    hydrated,
   };
 }

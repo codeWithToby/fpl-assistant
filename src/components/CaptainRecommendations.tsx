@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { CaptainScoreBreakdown } from "@/lib/fpl/types";
+import { track } from "@/lib/analytics/track";
 import CaptainCard from "./CaptainCard";
 
 interface Props {
@@ -12,6 +13,15 @@ interface Props {
 export default function CaptainRecommendations({ ranked, noFixture }: Props) {
   const [showRest, setShowRest] = useState(false);
   const [top, ...rest] = ranked;
+
+  useEffect(() => {
+    if (!top) return;
+    track("captain_recommendation_viewed", {
+      player_id: top.playerId,
+      total_score: top.totalScore,
+      is_triple_captain: top.isTripleCaptainCandidate,
+    });
+  }, [top?.playerId]);
 
   return (
     <section className="flex flex-col gap-4">

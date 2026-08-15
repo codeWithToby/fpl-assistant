@@ -1,12 +1,13 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import type { BootstrapData, FixturesData, Player } from "@/lib/fpl/types";
 import { useSquadSelection, MAX_SQUAD_SIZE } from "@/hooks/useSquadSelection";
 import { useRecentForm } from "@/hooks/useRecentForm";
 import { computeCaptainScore } from "@/lib/fpl/scoring";
 import { computeOptimalXI } from "@/lib/fpl/optimalXI";
 import { getCurrentGameweek, getFinishedGameweekCount } from "@/lib/fpl/getCurrentGameweek";
+import { track } from "@/lib/analytics/track";
 import SquadBuilder from "./SquadBuilder";
 import SquadProgress from "./SquadProgress";
 import CaptainRecommendations from "./CaptainRecommendations";
@@ -20,7 +21,7 @@ interface Props {
 }
 
 export default function CaptainAssistant({ bootstrap, fixtures, isStale = false }: Props) {
-  const { squadIds, addPlayer, removePlayer, replaceSquad, isFull, remainingBudget } =
+  const { squadIds, addPlayer, removePlayer, replaceSquad, isFull, remainingBudget, hydrated } =
     useSquadSelection(bootstrap.players);
 
   const [positionFilter, setPositionFilter] = useState<number | null>(null);
@@ -87,6 +88,26 @@ export default function CaptainAssistant({ bootstrap, fixtures, isStale = false 
   const noFixture = recommendations.filter((r) => !r.hasFixtureThisGameweek);
 
   const isSquadComplete = squadPlayers.length === MAX_SQUAD_SIZE;
+
+  // Fires once per genuine in-session completion — not on page load when a
+  // returning user's localStorage squad is already full, which would look
+  // identical to isSquadComplete otherwise. The first post-hydration render
+  // just records the starting point instead of firing.
+  const baselineSetRef = useRef(false);
+  const wasCompleteRef = useRef(false);
+
+  useEffect(() => {
+    if (!hydrated) return;
+    if (!baselineSetRef.current) {
+      baselineSetRef.current = true;
+      wasCompleteRef.current = isSquadComplete;
+      return;
+    }
+    if (isSquadComplete && !wasCompleteRef.current) {
+      track("squad_completed", { squad_size: squadPlayers.length });
+    }
+    wasCompleteRef.current = isSquadComplete;
+  }, [hydrated, isSquadComplete, squadPlayers.length]);
 
   const optimalXI = useMemo(() => {
     if (!isSquadComplete) return null;

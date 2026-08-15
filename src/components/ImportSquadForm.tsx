@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
+import { track } from "@/lib/analytics/track";
 
 interface Props {
   currentGameweekId: number | null;
@@ -49,6 +50,7 @@ export default function ImportSquadForm({ currentGameweekId, onImport, hasSquad 
         return;
       }
 
+      track("import_squad_used");
       onImport(data.playerIds);
       setStatus("idle");
       setTeamId("");

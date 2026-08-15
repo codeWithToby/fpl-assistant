@@ -3,6 +3,7 @@
 import { useState } from "react";
 import type { Player } from "@/lib/fpl/types";
 import { generateRandomSquad } from "@/lib/fpl/randomSquad";
+import { track } from "@/lib/analytics/track";
 
 interface Props {
   allPlayers: Player[];
@@ -24,6 +25,7 @@ export default function RandomSquadButton({ allPlayers, onGenerate, hasSquad }: 
       return;
     }
     setFailed(false);
+    track("random_squad_used");
     onGenerate(squad);
   };
 

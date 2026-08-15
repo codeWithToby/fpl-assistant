@@ -37,6 +37,11 @@ No auth, no mini-leagues, no transfer planner, no price change predictor, no wil
 - Data-dense but not cluttered — this is a decision tool, not a dashboard
 - Follow the `frontend-design` skill (~/.claude/skills/frontend-design) for any UI/styling work — intentional typography and spacing, restrained purposeful color, no generic AI-default layouts
 
+## Analytics
+- Vercel Web Analytics — baseline traffic (visitors, DAU, page views), enabled in the Vercel dashboard
+- Supabase `events` table (see `supabase-schema.sql`) — product-level tracking, since there's no auth to key off of. Anonymous per-browser ID (localStorage, `src/lib/analytics/track.ts`), fire-and-forget inserts, RLS restricts the anon key to insert-only. Events: `squad_completed`, `captain_recommendation_viewed`, `random_squad_used`, `import_squad_used`.
+
 ## Deploy
 - Push to GitHub, deploy via Vercel MCP
 - Supabase table: `squad_snapshots` (gameweek, squad_json, created_at) if we want to save/reload squads later — optional for v1
+- Supabase table: `events` (anon_id, event_name, metadata, created_at) — already added, see Analytics above
