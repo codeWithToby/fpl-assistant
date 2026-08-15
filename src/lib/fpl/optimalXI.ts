@@ -27,6 +27,36 @@ function rotationNoteFor(
     : "Limited recent minutes — rotation risk";
 }
 
+// Deliberately mirrors scoring.ts's buildOneLiner — same voice, same
+// building blocks (starter status, fixture, xGI, fitness doubt) — minus
+// the captaincy-only framing ("not fit for captaincy", Triple Captain)
+// that doesn't mean anything for a starting-XI/bench slot.
+function buildSlotReason(
+  captain: CaptainScoreBreakdown,
+  finishedGameweekCount: number
+): string {
+  if (!captain.hasFixtureThisGameweek) {
+    return "No fixture this gameweek.";
+  }
+
+  const fx = captain.components.fixture;
+  const fixtureClause = fx
+    ? `${fx.isHome ? "home" : "away"} vs ${fx.opponentShortName} (FDR ${fx.fdr}/5)`
+    : "an unclear fixture";
+
+  const starterClause = captain.nailedOn
+    ? finishedGameweekCount === 0
+      ? "Expected to start once the season kicks off"
+      : "Nailed-on starter"
+    : "Carrying some rotation risk";
+
+  const doubtClause = captain.availability.note
+    ? `, though ${captain.availability.note.toLowerCase()}`
+    : "";
+
+  return `${starterClause}, ${fixtureClause}, ${captain.components.xgi.per90.toFixed(2)} xGI/90${doubtClause}.`;
+}
+
 // The "how good a starting-XI pick is this player right now" number — same
 // captain score for MID/FWD, but blended with clean sheet probability for
 // GK/DEF, since attacking output barely applies to them. Squad-agnostic:
@@ -89,6 +119,7 @@ function buildSlot(
       finishedGameweekCount
     ),
     cleanSheetProbability,
+    oneLinerReason: buildSlotReason(captain, finishedGameweekCount),
   };
 }
 

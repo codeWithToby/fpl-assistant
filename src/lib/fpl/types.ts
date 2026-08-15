@@ -127,6 +127,10 @@ export interface XISlot {
   rotationRisk: boolean;
   rotationNote: string | null;
   cleanSheetProbability: number | null; // GK/DEF only
+  /** One plain-language sentence on why this slot's value is what it is —
+   *  same voice as CaptainScoreBreakdown.oneLinerReason, minus the
+   *  captaincy-specific framing that doesn't apply to a starting XI slot. */
+  oneLinerReason: string;
 }
 
 export interface OptimalXIResult {
