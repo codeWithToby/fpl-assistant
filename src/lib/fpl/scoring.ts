@@ -42,6 +42,14 @@ function resolveNailedOn(
   finishedGameweekCount: number
 ): boolean {
   if (finishedGameweekCount === 0) return true; // preseason, no sample yet
+
+  // Prefer how much they've actually played over their last few games —
+  // a season-long average stays high for a while after a player loses
+  // their place, and stays low for a while after they win it back.
+  if (player.recentMinutesRatio !== undefined && player.recentMinutesRatio !== null) {
+    return player.recentMinutesRatio >= NAILED_ON_MINUTES_RATIO;
+  }
+
   const ratio = player.minutes / (finishedGameweekCount * 90);
   return ratio >= NAILED_ON_MINUTES_RATIO;
 }

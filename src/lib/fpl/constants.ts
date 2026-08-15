@@ -100,3 +100,15 @@ export const SQUAD_POSITION_NEEDS: Record<number, number> = {
   4: 3, // FWD
 };
 export const RANDOM_SQUAD_MAX_ATTEMPTS = 25;
+
+// --- Recent form (recency adjustment) ---
+
+// Season-to-date xGI/xGC and minutes-ratio dilute a player's last few
+// games with everything from the start of the season — a player who was
+// sharp in August but cold for a month still scores well, and a player
+// who's lost their place after playing every minute early on still reads
+// as "nailed on." Scoring instead prefers the last N gameweeks when
+// there's enough of a sample to trust, falling back to season-to-date
+// otherwise (see recentForm.ts).
+export const RECENT_FORM_WINDOW_GAMEWEEKS = 6;
+export const RECENT_FORM_MIN_MINUTES = 180; // ~2 full games, same bar as the clean sheet own-rate gate

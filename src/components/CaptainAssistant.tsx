@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import type { BootstrapData, FixturesData, Player } from "@/lib/fpl/types";
 import { useSquadSelection, MAX_SQUAD_SIZE } from "@/hooks/useSquadSelection";
+import { useRecentForm } from "@/hooks/useRecentForm";
 import { computeCaptainScore } from "@/lib/fpl/scoring";
 import { computeOptimalXI } from "@/lib/fpl/optimalXI";
 import { getCurrentGameweek, getFinishedGameweekCount } from "@/lib/fpl/getCurrentGameweek";
@@ -57,6 +58,12 @@ export default function CaptainAssistant({ bootstrap, fixtures, isStale = false 
     [squadIds, playersById]
   );
 
+  // Same players, with season-to-date xGI/xGC/minutes-ratio swapped for
+  // last-6-gameweek figures where the sample's reliable enough — see
+  // useRecentForm.ts. Only used for scoring below; squadPlayers itself
+  // still drives the sidebar/build-pitch display, which doesn't care.
+  const enrichedSquadPlayers = useRecentForm(squadPlayers);
+
   const finishedGameweekCount = useMemo(
     () => getFinishedGameweekCount(bootstrap.events),
     [bootstrap.events]
@@ -68,12 +75,12 @@ export default function CaptainAssistant({ bootstrap, fixtures, isStale = false 
   );
 
   const recommendations = useMemo(() => {
-    return squadPlayers
+    return enrichedSquadPlayers
       .map((p) =>
         computeCaptainScore(p, bootstrap.teams, fixtures.fixtures, finishedGameweekCount)
       )
       .sort((a, b) => b.totalScore - a.totalScore);
-  }, [squadPlayers, bootstrap.teams, fixtures.fixtures, finishedGameweekCount]);
+  }, [enrichedSquadPlayers, bootstrap.teams, fixtures.fixtures, finishedGameweekCount]);
 
   const ranked = recommendations.filter((r) => r.hasFixtureThisGameweek);
   const noFixture = recommendations.filter((r) => !r.hasFixtureThisGameweek);
@@ -82,8 +89,13 @@ export default function CaptainAssistant({ bootstrap, fixtures, isStale = false 
 
   const optimalXI = useMemo(() => {
     if (!isSquadComplete) return null;
-    return computeOptimalXI(squadPlayers, bootstrap.teams, fixtures.fixtures, finishedGameweekCount);
-  }, [isSquadComplete, squadPlayers, bootstrap.teams, fixtures.fixtures, finishedGameweekCount]);
+    return computeOptimalXI(
+      enrichedSquadPlayers,
+      bootstrap.teams,
+      fixtures.fixtures,
+      finishedGameweekCount
+    );
+  }, [isSquadComplete, enrichedSquadPlayers, bootstrap.teams, fixtures.fixtures, finishedGameweekCount]);
 
   return (
     <div className="flex flex-col">

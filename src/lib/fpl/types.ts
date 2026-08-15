@@ -18,6 +18,10 @@ export interface Player {
   expectedGoalsConcededPer90: number;
   status: PlayerStatus;
   chanceOfPlayingNextRound: number | null;
+  // Set once recent-form data has been fetched for this player (see
+  // recentForm.ts) — undefined until then, meaning "no recent data yet,
+  // use season-to-date". Not one of the raw bootstrap-static fields.
+  recentMinutesRatio?: number | null;
 }
 
 export interface Team {
@@ -128,4 +132,14 @@ export interface OptimalXIResult {
   formation: string; // e.g. "4-4-2" (DEF-MID-FWD)
   starters: XISlot[]; // 11, GK included
   bench: XISlot[]; // 4, ordered by benchOrder
+}
+
+// --- Recent form (last-N-gameweek recency adjustment) ---
+
+export interface RecentFormStats {
+  recentMinutes: number;
+  recentGameweeksConsidered: number;
+  xgiPer90: number | null; // null if the recent-minutes sample is too small to trust
+  xgcPer90: number | null;
+  minutesRatio: number | null; // recentMinutes ÷ (gameweeks considered × 90); null with zero gameweeks of history
 }

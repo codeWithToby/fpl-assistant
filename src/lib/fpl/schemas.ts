@@ -83,6 +83,21 @@ export const rawPicksResponseSchema = z.object({
   picks: z.array(z.object({ element: z.number() })),
 });
 
+// element-summary's per-gameweek history — expected_goal_involvements/
+// expected_goals_conceded here are per-MATCH totals (strings, like form/
+// selected_by_percent elsewhere), not the per-90 rates bootstrap-static
+// gives — recentForm.ts derives per-90 from these itself.
+export const rawElementHistoryEntrySchema = z.object({
+  round: z.number(),
+  minutes: z.number(),
+  expected_goal_involvements: z.string(),
+  expected_goals_conceded: z.string(),
+});
+
+export const rawElementSummarySchema = z.object({
+  history: z.array(rawElementHistoryEntrySchema),
+});
+
 export type RawPlayer = z.infer<typeof rawPlayerSchema>;
 export type RawTeam = z.infer<typeof rawTeamSchema>;
 export type RawEvent = z.infer<typeof rawEventSchema>;
@@ -90,6 +105,8 @@ export type RawElementType = z.infer<typeof rawElementTypeSchema>;
 export type RawBootstrap = z.infer<typeof rawBootstrapSchema>;
 export type RawFixture = z.infer<typeof rawFixtureSchema>;
 export type RawPicksResponse = z.infer<typeof rawPicksResponseSchema>;
+export type RawElementHistoryEntry = z.infer<typeof rawElementHistoryEntrySchema>;
+export type RawElementSummary = z.infer<typeof rawElementSummarySchema>;
 
 // Validates `json` against `schema`, logging exactly which field(s) broke
 // before throwing a short, catchable error — callers don't need to know
