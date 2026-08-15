@@ -11,6 +11,7 @@ import SquadBuilder from "./SquadBuilder";
 import SquadProgress from "./SquadProgress";
 import CaptainRecommendations from "./CaptainRecommendations";
 import OptimalXI from "./OptimalXI";
+import DeadlineBadge from "./DeadlineBadge";
 
 interface Props {
   bootstrap: BootstrapData;
@@ -68,10 +69,11 @@ export default function CaptainAssistant({ bootstrap, fixtures, isStale = false 
     [bootstrap.events]
   );
 
-  const currentGameweekId = useMemo(
-    () => getCurrentGameweek(bootstrap.events)?.id ?? null,
+  const currentGameweek = useMemo(
+    () => getCurrentGameweek(bootstrap.events),
     [bootstrap.events]
   );
+  const currentGameweekId = currentGameweek?.id ?? null;
 
   const recommendations = useMemo(() => {
     return enrichedSquadPlayers
@@ -102,9 +104,17 @@ export default function CaptainAssistant({ bootstrap, fixtures, isStale = false 
           the identifying brand moment rather than scattered everywhere. */}
       <header className="bg-[linear-gradient(160deg,var(--brand)_0%,var(--brand-light)_45%,var(--pitch)_150%)] px-4 pb-10 pt-8 md:pb-14 md:pt-12 lg:px-8">
         <div className="mx-auto max-w-7xl">
-          <span className="text-xs font-bold uppercase tracking-wide text-pitch">
-            Your FPL Assistant
-          </span>
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <span className="text-xs font-bold uppercase tracking-wide text-pitch">
+              Your FPL Assistant
+            </span>
+            {currentGameweek && (
+              <DeadlineBadge
+                gameweekName={currentGameweek.name}
+                deadlineTime={currentGameweek.deadlineTime}
+              />
+            )}
+          </div>
           <h1 className="mt-2 text-3xl font-bold tracking-tight text-white md:text-4xl">
             Who should you captain?
           </h1>

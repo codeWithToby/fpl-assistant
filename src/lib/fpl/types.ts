@@ -36,6 +36,7 @@ export interface GameweekEvent {
   isCurrent: boolean;
   isNext: boolean;
   finished: boolean;
+  deadlineTime: string; // ISO 8601, UTC
 }
 
 export interface ElementType {
