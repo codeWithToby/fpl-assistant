@@ -104,18 +104,20 @@ export default function CaptainAssistant({ bootstrap, fixtures, isStale = false 
           the identifying brand moment rather than scattered everywhere. */}
       <header className="bg-[linear-gradient(160deg,var(--brand)_0%,var(--brand-light)_45%,var(--pitch)_150%)] px-4 pb-10 pt-8 md:pb-14 md:pt-12 lg:px-8">
         <div className="mx-auto max-w-7xl">
-          <div className="flex flex-wrap items-center justify-between gap-3">
-            <span className="text-xs font-bold uppercase tracking-wide text-pitch">
-              Your FPL Assistant
-            </span>
-            {currentGameweek && (
+          <span className="text-xs font-bold uppercase tracking-wide text-pitch">
+            Your FPL Assistant
+          </span>
+
+          {currentGameweek && (
+            <div className="mt-3">
               <DeadlineBadge
                 gameweekName={currentGameweek.name}
                 deadlineTime={currentGameweek.deadlineTime}
               />
-            )}
-          </div>
-          <h1 className="mt-2 text-3xl font-bold tracking-tight text-white md:text-4xl">
+            </div>
+          )}
+
+          <h1 className="mt-4 text-3xl font-bold tracking-tight text-white md:text-4xl">
             Who should you captain?
           </h1>
           <p className="mt-2 max-w-md text-sm leading-relaxed text-white/80">

@@ -45,15 +45,26 @@ export default function DeadlineBadge({ gameweekName, deadlineTime }: Props) {
   }, [deadlineTime]);
 
   return (
-    <div className="inline-flex flex-wrap items-center gap-2 rounded-full bg-white/10 px-3 py-1.5 text-xs font-semibold text-white">
-      <span>
-        {gameweekName} deadline: {formatDeadline(deadlineTime)}
-      </span>
-      {relative && (
-        <span className="rounded-full bg-pitch px-2 py-0.5 text-[10px] font-bold text-brand">
-          {relative}
+    <div className="inline-flex items-center gap-2.5 rounded-[10px] bg-pitch px-4 py-2.5 shadow-[0_8px_20px_-8px_rgba(0,0,0,0.45)]">
+      <svg
+        className="h-5 w-5 flex-none text-brand"
+        viewBox="0 0 16 16"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.5"
+      >
+        <circle cx="8" cy="8" r="6.25" />
+        <path d="M8 4.5V8l2.5 1.5" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+      <div className="flex flex-col leading-tight">
+        <span className="text-[10px] font-bold uppercase tracking-wide text-brand/70">
+          {gameweekName} deadline
         </span>
-      )}
+        <span className="text-sm font-bold text-brand">
+          {formatDeadline(deadlineTime)}
+          {relative && <span className="ml-1.5">· {relative}</span>}
+        </span>
+      </div>
     </div>
   );
 }
