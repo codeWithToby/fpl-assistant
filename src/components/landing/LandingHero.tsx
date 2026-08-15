@@ -35,7 +35,10 @@ export default function LandingHero() {
             >
               Set up your squad
             </Link>
-            <Link href="/squad" className="text-sm font-semibold text-white/80 hover:text-white">
+            <Link
+              href="/squad?random=1"
+              className="text-sm font-semibold text-white/80 hover:text-white"
+            >
               Or jump straight to a random squad →
             </Link>
           </div>

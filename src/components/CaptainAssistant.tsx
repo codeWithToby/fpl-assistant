@@ -6,6 +6,7 @@ import { useSquadSelection, MAX_SQUAD_SIZE } from "@/hooks/useSquadSelection";
 import { useRecentForm } from "@/hooks/useRecentForm";
 import { computeCaptainScore } from "@/lib/fpl/scoring";
 import { computeOptimalXI } from "@/lib/fpl/optimalXI";
+import { generateRandomSquad } from "@/lib/fpl/randomSquad";
 import { getCurrentGameweek, getFinishedGameweekCount } from "@/lib/fpl/getCurrentGameweek";
 import { track } from "@/lib/analytics/track";
 import SquadBuilder from "./SquadBuilder";
@@ -44,6 +45,32 @@ export default function CaptainAssistant({ bootstrap, fixtures, isStale = false 
       handleReplaceSquad([]);
     }
   };
+
+  // "Jump straight to a random squad" links from the landing page and How
+  // It Works arrive here as /squad?random=1 — without this, that promise
+  // was broken for any returning user: the page just hydrated whatever was
+  // already in localStorage and the link did nothing. This overrides that
+  // squad on arrival (no confirm — clicking a link that says "random squad"
+  // is the confirmation) and strips the param so a later refresh doesn't
+  // keep re-randomizing.
+  const randomRequestHandledRef = useRef(false);
+
+  useEffect(() => {
+    if (!hydrated || randomRequestHandledRef.current) return;
+    randomRequestHandledRef.current = true;
+
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("random") !== "1") return;
+
+    const squad = generateRandomSquad(bootstrap.players);
+    if (squad) {
+      handleReplaceSquad(squad);
+    }
+
+    params.delete("random");
+    const query = params.toString();
+    window.history.replaceState(null, "", `${window.location.pathname}${query ? `?${query}` : ""}`);
+  }, [hydrated, bootstrap.players]);
 
   const playersById = useMemo(() => {
     const map = new Map<number, Player>();

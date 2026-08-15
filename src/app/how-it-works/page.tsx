@@ -258,7 +258,7 @@ export default function HowItWorksPage() {
               Set up your squad
             </Link>
             <Link
-              href="/squad"
+              href="/squad?random=1"
               className="text-sm font-semibold text-brand-light hover:text-brand dark:text-pitch dark:hover:text-pitch-dark"
             >
               Or try a random squad →
