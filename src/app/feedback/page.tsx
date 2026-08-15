@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import FeedbackForm from "@/components/FeedbackForm";
 
 export const metadata: Metadata = {
-  title: "Feedback — FPL Assistant",
-  description: "Tell FPL Assistant what's working, what's broken, or what you want next.",
+  title: "Feedback — Armband",
+  description: "Tell Armband what's working, what's broken, or what you want next.",
 };
 
 export default function FeedbackPage() {

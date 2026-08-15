@@ -1,4 +1,9 @@
-# Project: FPL Optimal Team & Captain Assistant
+# Project: Armband — FPL Captain Assistant
+
+Product name is **Armband** (renamed from "FPL Assistant"). The repo, npm
+package, GitHub repo, and Vercel project all still use the old
+`fpl-assistant` identifier — that's an infrastructure name, not the brand,
+and hasn't been renamed. User-facing text should always say "Armband."
 
 ## Stack
 - Next.js (App Router)

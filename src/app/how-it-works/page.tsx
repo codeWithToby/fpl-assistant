@@ -5,8 +5,8 @@ import PitchPreviewMini from "@/components/PitchPreviewMini";
 import WeightBar from "@/components/WeightBar";
 
 export const metadata: Metadata = {
-  title: "How It Works — FPL Assistant",
-  description: "A plain-language walkthrough of the logic behind every FPL Assistant recommendation.",
+  title: "How It Works — Armband",
+  description: "A plain-language walkthrough of the logic behind every Armband recommendation.",
 };
 
 const CS_EXAMPLES = [
@@ -21,7 +21,7 @@ export default function HowItWorksPage() {
       <header className="bg-[linear-gradient(160deg,var(--brand)_0%,var(--brand-light)_45%,var(--pitch)_150%)] px-4 py-16 md:py-24 lg:px-8">
         <div className="mx-auto max-w-3xl">
           <span className="text-xs font-bold uppercase tracking-wide text-pitch">
-            FPL Assistant
+            Armband
           </span>
           <h1 className="mt-4 text-4xl font-bold tracking-tight text-white md:text-5xl">
             How it decides

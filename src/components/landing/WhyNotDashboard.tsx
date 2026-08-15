@@ -21,7 +21,7 @@ export default function WhyNotDashboard() {
           Why not just another stats dashboard
         </span>
         <h2 className="mt-2 text-2xl font-bold tracking-tight text-foreground md:text-3xl">
-          Most FPL tools hand you more data. Your assistant makes the calls.
+          Most FPL tools hand you more data. Armband makes the calls.
         </h2>
         <p className="mt-4 text-sm leading-relaxed text-zinc-600 dark:text-zinc-300 md:text-base">
           FPL rewards decisions, not data collection. Most tools show you stats tables,
@@ -42,7 +42,7 @@ export default function WhyNotDashboard() {
         </div>
         <div className="rounded-[10px] border-2 border-brand-light bg-pitch-soft p-6">
           <p className="text-xs font-bold uppercase tracking-wide text-brand-light dark:text-pitch">
-            Your FPL Assistant
+            Armband
           </p>
           <p className="mt-2 text-sm leading-relaxed text-foreground">
             One recommendation per decision, with one sentence of reasoning. The call, made —

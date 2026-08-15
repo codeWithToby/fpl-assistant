@@ -11,8 +11,10 @@ const LINKS = [
   { href: "/feedback", label: "Feedback" },
 ];
 
-// Echoes the pitch-circle motif used throughout the app (Optimal XI,
-// landing page accents) rather than an arbitrary, unrelated mark.
+// The captain's armband itself — a banded stripe wrapped at an angle (as
+// if around an arm) with the same star mark TripleCaptainBadge already
+// uses elsewhere, so "captain" reads as one consistent motif app-wide
+// rather than two unrelated icons.
 function Logo() {
   return (
     <Link href="/" className="flex flex-none items-center gap-2.5">
@@ -24,12 +26,16 @@ function Logo() {
           stroke="currentColor"
           strokeWidth="1.5"
         >
-          <circle cx="8" cy="8" r="5.5" />
-          <path d="M2.5 8h11" strokeLinecap="round" />
+          <rect x="1.5" y="6" width="13" height="4.4" rx="2.2" transform="rotate(-9 8 8)" />
+          <path
+            d="M8 6.7 8.45 7.7l1.05.15-.75.75.18 1.1L8 9.15l-.93.45.18-1.1-.75-.75L7.55 7.7Z"
+            fill="currentColor"
+            stroke="none"
+          />
         </svg>
       </span>
       <span className="text-base font-bold tracking-tight text-white sm:text-lg">
-        FPL Assistant
+        Armband
       </span>
     </Link>
   );

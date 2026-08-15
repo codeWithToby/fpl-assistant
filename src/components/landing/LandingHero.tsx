@@ -18,7 +18,7 @@ export default function LandingHero() {
       <div className="relative mx-auto grid max-w-6xl grid-cols-1 items-center gap-12 lg:grid-cols-[1.1fr_0.9fr] lg:gap-8">
         <div className="text-center lg:text-left">
           <span className="text-xs font-bold uppercase tracking-wide text-pitch">
-            Your FPL Assistant
+            Armband
           </span>
           <h1 className="mt-4 text-4xl font-bold tracking-tight text-white md:text-5xl">
             Your FPL decisions — made for you, not dumped on you.

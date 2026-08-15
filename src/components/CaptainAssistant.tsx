@@ -165,7 +165,7 @@ export default function CaptainAssistant({ bootstrap, fixtures, isStale = false 
       <header className="bg-[linear-gradient(160deg,var(--brand)_0%,var(--brand-light)_45%,var(--pitch)_150%)] px-4 pb-10 pt-8 md:pb-14 md:pt-12 lg:px-8">
         <div className="mx-auto max-w-7xl">
           <span className="text-xs font-bold uppercase tracking-wide text-pitch">
-            Your FPL Assistant
+            Armband
           </span>
 
           {currentGameweek && (
