@@ -1,6 +1,15 @@
-import type { Fixture, OptimalXIResult, Player, Team } from "./types";
+import type { CaptainScoreBreakdown, Fixture, OptimalXIResult, Player, Team } from "./types";
 import { computePlayerValue, computeOptimalXI } from "./optimalXI";
+import { computeCaptainScore } from "./scoring";
 import { MAX_PLAYERS_PER_TEAM, SQUAD_BUDGET, SQUAD_POSITION_NEEDS } from "./constants";
+
+export interface TeamOfTheWeekResult {
+  optimalXI: OptimalXIResult;
+  // Same computeCaptainScore pass used for a user's own squad, just run
+  // over this squad-agnostic 15 instead — ranked so the page can split
+  // into ranked/noFixture the same way CaptainAssistant does.
+  captainRecommendations: CaptainScoreBreakdown[];
+}
 
 const IMPROVE_PASSES = 3;
 
@@ -27,7 +36,7 @@ export function selectTeamOfTheWeek(
   teams: Team[],
   fixtures: Fixture[],
   finishedGameweekCount: number
-): OptimalXIResult | null {
+): TeamOfTheWeekResult | null {
   const valueById = new Map<number, number>();
   for (const p of allPlayers) {
     valueById.set(p.id, computePlayerValue(p, teams, fixtures, finishedGameweekCount).value);
@@ -117,5 +126,12 @@ export function selectTeamOfTheWeek(
     if (!improved) break;
   }
 
-  return computeOptimalXI(picked, teams, fixtures, finishedGameweekCount);
+  const captainRecommendations = picked
+    .map((p) => computeCaptainScore(p, teams, fixtures, finishedGameweekCount))
+    .sort((a, b) => b.totalScore - a.totalScore);
+
+  return {
+    optimalXI: computeOptimalXI(picked, teams, fixtures, finishedGameweekCount),
+    captainRecommendations,
+  };
 }

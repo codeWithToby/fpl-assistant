@@ -8,9 +8,21 @@ import CaptainCard from "./CaptainCard";
 interface Props {
   ranked: CaptainScoreBreakdown[];
   noFixture: CaptainScoreBreakdown[];
+  heading?: string;
+  emptyMessage?: string;
+  // Distinguishes squad-page views from other pages that reuse this same
+  // component (e.g. Team of the Week) in the shared analytics event, so
+  // "captain_recommendation_viewed" stays a meaningful signal per page.
+  context?: string;
 }
 
-export default function CaptainRecommendations({ ranked, noFixture }: Props) {
+export default function CaptainRecommendations({
+  ranked,
+  noFixture,
+  heading = "Captain recommendation",
+  emptyMessage = "None of your squad have a fixture this gameweek yet.",
+  context = "squad",
+}: Props) {
   const [showRest, setShowRest] = useState(false);
   const [top, ...rest] = ranked;
 
@@ -20,18 +32,17 @@ export default function CaptainRecommendations({ ranked, noFixture }: Props) {
       player_id: top.playerId,
       total_score: top.totalScore,
       is_triple_captain: top.isTripleCaptainCandidate,
+      page: context,
     });
-  }, [top?.playerId]);
+  }, [top?.playerId, context]);
 
   return (
     <section className="flex flex-col gap-4">
-      <h2 className="text-xs font-bold uppercase tracking-wide text-zinc-500">
-        Captain recommendation
-      </h2>
+      <h2 className="text-xs font-bold uppercase tracking-wide text-zinc-500">{heading}</h2>
 
       {!top ? (
         <p className="rounded-[10px] border border-dashed border-zinc-300 px-4 py-6 text-center text-sm text-zinc-500">
-          None of your squad have a fixture this gameweek yet.
+          {emptyMessage}
         </p>
       ) : (
         <>

@@ -5,6 +5,7 @@ import { selectTeamOfTheWeek } from "@/lib/fpl/teamOfTheWeek";
 import { getCurrentGameweek, getFinishedGameweekCount } from "@/lib/fpl/getCurrentGameweek";
 import { formatPrice } from "@/lib/fpl/constants";
 import OptimalXI from "@/components/OptimalXI";
+import CaptainRecommendations from "@/components/CaptainRecommendations";
 
 export const metadata: Metadata = {
   title: "Team of the Week — Armband",
@@ -32,7 +33,7 @@ export default async function TeamOfTheWeekPage() {
 
   const costById = new Map(bootstrap.players.map((p) => [p.id, p.nowCost]));
   const squadCost = result
-    ? [...result.starters, ...result.bench].reduce(
+    ? [...result.optimalXI.starters, ...result.optimalXI.bench].reduce(
         (sum, s) => sum + (costById.get(s.playerId) ?? 0),
         0
       )
@@ -57,7 +58,7 @@ export default async function TeamOfTheWeekPage() {
           {result && (
             <div className="mt-5 flex flex-wrap gap-2">
               <span className="inline-flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-1.5 text-xs font-bold text-white ring-1 ring-white/20">
-                Formation <span className="text-pitch">{result.formation}</span>
+                Formation <span className="text-pitch">{result.optimalXI.formation}</span>
               </span>
               <span className="inline-flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-1.5 text-xs font-bold text-white ring-1 ring-white/20">
                 Squad cost <span className="text-pitch">{formatPrice(squadCost)}</span>
@@ -72,9 +73,18 @@ export default async function TeamOfTheWeekPage() {
         </div>
       </header>
 
-      <div className="mx-auto -mt-6 w-full max-w-3xl px-4 pb-12 md:-mt-8 lg:px-8">
+      <div className="mx-auto -mt-6 flex w-full max-w-3xl flex-col gap-8 px-4 pb-12 md:-mt-8 lg:px-8">
         {result ? (
-          <OptimalXI result={result} title="Team of the Week" />
+          <>
+            <CaptainRecommendations
+              ranked={result.captainRecommendations.filter((r) => r.hasFixtureThisGameweek)}
+              noFixture={result.captainRecommendations.filter((r) => !r.hasFixtureThisGameweek)}
+              heading="Captain pick"
+              emptyMessage="None of this week's Team of the Week have a fixture yet."
+              context="team_of_the_week"
+            />
+            <OptimalXI result={result.optimalXI} title="Team of the Week" />
+          </>
         ) : (
           <p className="rounded-[10px] border border-dashed border-zinc-300 px-4 py-10 text-center text-sm text-zinc-500">
             Couldn&apos;t put together a valid squad right now — try again shortly.
