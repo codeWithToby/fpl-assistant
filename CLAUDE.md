@@ -40,8 +40,13 @@ No auth, no mini-leagues, no transfer planner, no price change predictor, no wil
 ## Analytics
 - Vercel Web Analytics — baseline traffic (visitors, DAU, page views), enabled in the Vercel dashboard
 - Supabase `events` table (see `supabase-schema.sql`) — product-level tracking, since there's no auth to key off of. Anonymous per-browser ID (localStorage, `src/lib/analytics/track.ts`), fire-and-forget inserts, RLS restricts the anon key to insert-only. Events: `squad_completed`, `captain_recommendation_viewed`, `random_squad_used`, `import_squad_used`.
+- Site-wide footer (`src/components/Footer.tsx`) carries a one-line note that anonymous analytics are collected — keep this in sync if the analytics scope ever changes.
+
+## Feedback
+- `/feedback` (was `/contact`) — a form (`src/components/FeedbackForm.tsx`) that writes straight to the Supabase `feedback` table (message, optional email). Insert-only RLS, same pattern as `events`. No confirmation email is sent — check the table directly.
 
 ## Deploy
 - Push to GitHub, deploy via Vercel MCP
 - Supabase table: `squad_snapshots` (gameweek, squad_json, created_at) if we want to save/reload squads later — optional for v1
 - Supabase table: `events` (anon_id, event_name, metadata, created_at) — already added, see Analytics above
+- Supabase table: `feedback` (message, email, created_at) — already added, see Feedback above
