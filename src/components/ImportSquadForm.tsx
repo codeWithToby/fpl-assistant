@@ -2,6 +2,7 @@
 
 import { useState, type FormEvent } from "react";
 import { track } from "@/lib/analytics/track";
+import ConfirmDialog from "./ConfirmDialog";
 
 interface Props {
   currentGameweekId: number | null;
@@ -13,6 +14,7 @@ export default function ImportSquadForm({ currentGameweekId, onImport, hasSquad 
   const [teamId, setTeamId] = useState("");
   const [status, setStatus] = useState<"idle" | "loading" | "error">("idle");
   const [errorMessage, setErrorMessage] = useState("");
+  const [pendingImport, setPendingImport] = useState<number[] | null>(null);
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
@@ -42,10 +44,8 @@ export default function ImportSquadForm({ currentGameweekId, onImport, hasSquad 
         return;
       }
 
-      if (
-        hasSquad &&
-        !window.confirm("Replace your current squad with the imported one? This can't be undone.")
-      ) {
+      if (hasSquad) {
+        setPendingImport(data.playerIds);
         setStatus("idle");
         return;
       }
@@ -62,6 +62,18 @@ export default function ImportSquadForm({ currentGameweekId, onImport, hasSquad 
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-1.5">
+      {pendingImport && (
+        <ConfirmDialog
+          message="Replace your current squad with the imported one? This can't be undone."
+          onConfirm={() => {
+            track("import_squad_used");
+            onImport(pendingImport);
+            setPendingImport(null);
+            setTeamId("");
+          }}
+          onCancel={() => setPendingImport(null)}
+        />
+      )}
       <div className="flex gap-2">
         <input
           type="text"

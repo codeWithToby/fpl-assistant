@@ -4,6 +4,7 @@ import { useState } from "react";
 import type { Player } from "@/lib/fpl/types";
 import { generateRandomSquad } from "@/lib/fpl/randomSquad";
 import { track } from "@/lib/analytics/track";
+import ConfirmDialog from "./ConfirmDialog";
 
 interface Props {
   allPlayers: Player[];
@@ -13,12 +14,9 @@ interface Props {
 
 export default function RandomSquadButton({ allPlayers, onGenerate, hasSquad }: Props) {
   const [failed, setFailed] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
 
-  const handleClick = () => {
-    if (hasSquad && !window.confirm("Replace your current squad with a random one? This can't be undone.")) {
-      return;
-    }
-
+  const generate = () => {
     const squad = generateRandomSquad(allPlayers);
     if (!squad) {
       setFailed(true);
@@ -29,8 +27,26 @@ export default function RandomSquadButton({ allPlayers, onGenerate, hasSquad }: 
     onGenerate(squad);
   };
 
+  const handleClick = () => {
+    if (hasSquad) {
+      setShowConfirm(true);
+      return;
+    }
+    generate();
+  };
+
   return (
     <div>
+      {showConfirm && (
+        <ConfirmDialog
+          message="Replace your current squad with a random one? This can't be undone."
+          onConfirm={() => {
+            setShowConfirm(false);
+            generate();
+          }}
+          onCancel={() => setShowConfirm(false)}
+        />
+      )}
       <button
         type="button"
         onClick={handleClick}

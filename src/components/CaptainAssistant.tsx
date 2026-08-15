@@ -9,6 +9,7 @@ import { computeOptimalXI } from "@/lib/fpl/optimalXI";
 import { generateRandomSquad } from "@/lib/fpl/randomSquad";
 import { getCurrentGameweek, getFinishedGameweekCount } from "@/lib/fpl/getCurrentGameweek";
 import { track } from "@/lib/analytics/track";
+import ConfirmDialog from "./ConfirmDialog";
 import SquadBuilder from "./SquadBuilder";
 import SquadProgress from "./SquadProgress";
 import CaptainRecommendations from "./CaptainRecommendations";
@@ -40,10 +41,10 @@ export default function CaptainAssistant({ bootstrap, fixtures, isStale = false 
     setPositionFilter(null);
   };
 
+  const [showClearConfirm, setShowClearConfirm] = useState(false);
+
   const handleClearSquad = () => {
-    if (window.confirm("Clear your entire squad? This can't be undone.")) {
-      handleReplaceSquad([]);
-    }
+    setShowClearConfirm(true);
   };
 
   // "Jump straight to a random squad" links from the landing page and How
@@ -148,6 +149,17 @@ export default function CaptainAssistant({ bootstrap, fixtures, isStale = false 
 
   return (
     <div className="flex flex-col">
+      {showClearConfirm && (
+        <ConfirmDialog
+          message="Clear your entire squad? This can't be undone."
+          onConfirm={() => {
+            handleReplaceSquad([]);
+            setShowClearConfirm(false);
+          }}
+          onCancel={() => setShowClearConfirm(false)}
+        />
+      )}
+
       {/* Masthead — FPL's own purple-to-green gradient, used once here as
           the identifying brand moment rather than scattered everywhere. */}
       <header className="bg-[linear-gradient(160deg,var(--brand)_0%,var(--brand-light)_45%,var(--pitch)_150%)] px-4 pb-10 pt-8 md:pb-14 md:pt-12 lg:px-8">

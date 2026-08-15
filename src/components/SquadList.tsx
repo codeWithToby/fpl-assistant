@@ -35,9 +35,17 @@ export default function SquadList({ squadPlayers, teams, onRemove }: Props) {
               type="button"
               onClick={() => onRemove(p.id)}
               aria-label={`Remove ${p.webName}`}
-              className="px-3 py-3.5 text-xs font-semibold text-zinc-400 transition-colors hover:text-risk"
+              className="px-3 py-3.5 text-zinc-400 transition-colors hover:text-risk"
             >
-              Remove
+              <svg
+                className="h-4 w-4"
+                viewBox="0 0 16 16"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.75"
+              >
+                <path d="M4 4l8 8M12 4l-8 8" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
             </button>
           </li>
         );
