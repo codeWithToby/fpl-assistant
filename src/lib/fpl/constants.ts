@@ -44,10 +44,66 @@ export const POSITION_LABELS: Record<number, string> = {
   4: "FWD",
 };
 
+// Full-word section-header labels — distinct from POSITION_LABELS' short
+// badge codes, for grouped lists like SquadList where the position reads
+// as a heading rather than an inline tag.
+export const POSITION_GROUP_LABELS: Record<number, string> = {
+  1: "Goalkeepers",
+  2: "Defenders",
+  3: "Midfielders",
+  4: "Forwards",
+};
+
 export const POSITION_ORDER = [1, 2, 3, 4] as const;
 
 export function formatPrice(nowCost: number): string {
   return `£${(nowCost / 10).toFixed(1)}m`;
+}
+
+// Club primary color + a contrasting text color, keyed by the FPL short
+// code — used to tint pitch player cards instead of a licensed kit image
+// (no rights to reproduce real shirt artwork). Covers the current top
+// flight plus recently promoted/relegated sides; anything not listed
+// falls back to DEFAULT_TEAM_COLOR rather than breaking.
+export const TEAM_COLORS: Record<string, { bg: string; text: string }> = {
+  ARS: { bg: "#EF0107", text: "#FFFFFF" },
+  AVL: { bg: "#670E36", text: "#FFFFFF" },
+  BOU: { bg: "#DA291C", text: "#FFFFFF" },
+  BRE: { bg: "#E30613", text: "#FFFFFF" },
+  BHA: { bg: "#0057B8", text: "#FFFFFF" },
+  BUR: { bg: "#6C1D45", text: "#FFFFFF" },
+  CHE: { bg: "#034694", text: "#FFFFFF" },
+  CRY: { bg: "#1B458F", text: "#FFFFFF" },
+  EVE: { bg: "#003399", text: "#FFFFFF" },
+  FUL: { bg: "#000000", text: "#FFFFFF" },
+  LEE: { bg: "#1D428A", text: "#FFFFFF" },
+  LEI: { bg: "#003090", text: "#FFFFFF" },
+  LIV: { bg: "#C8102E", text: "#FFFFFF" },
+  MCI: { bg: "#6CABDD", text: "#1C2C5B" },
+  MUN: { bg: "#DA291C", text: "#FFFFFF" },
+  NEW: { bg: "#241F20", text: "#FFFFFF" },
+  NFO: { bg: "#DD0000", text: "#FFFFFF" },
+  SUN: { bg: "#EB172B", text: "#FFFFFF" },
+  TOT: { bg: "#132257", text: "#FFFFFF" },
+  WHU: { bg: "#7A263A", text: "#FFFFFF" },
+  WOL: { bg: "#FDB913", text: "#231F20" },
+  SOU: { bg: "#D71920", text: "#FFFFFF" },
+  IPS: { bg: "#0044A9", text: "#FFFFFF" },
+  SHU: { bg: "#EE2737", text: "#FFFFFF" },
+  WBA: { bg: "#122F67", text: "#FFFFFF" },
+  NOR: { bg: "#00A650", text: "#FFFFFF" },
+  WAT: { bg: "#FBEE23", text: "#ED2127" },
+  HUD: { bg: "#0E63AD", text: "#FFFFFF" },
+  CAR: { bg: "#0070B5", text: "#FFFFFF" },
+  MID: { bg: "#DA1A2E", text: "#FFFFFF" },
+  COV: { bg: "#78D0F7", text: "#1D2B53" },
+  LUT: { bg: "#F78F1E", text: "#06215B" },
+};
+
+export const DEFAULT_TEAM_COLOR = { bg: "var(--brand)", text: "#FFFFFF" };
+
+export function getTeamColor(shortName: string): { bg: string; text: string } {
+  return TEAM_COLORS[shortName] ?? DEFAULT_TEAM_COLOR;
 }
 
 // --- Clean sheet probability ---

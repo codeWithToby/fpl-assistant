@@ -121,12 +121,15 @@ export interface XISlot {
   webName: string;
   teamShortName: string;
   elementType: number;
+  nowCost: number; // tenths of £m, e.g. 155 -> £15.5m — same unit as Player.nowCost
   value: number; // 0-100, comparable across positions
   isStarter: boolean;
   benchOrder: number | null; // 1-4 if bench, null if starter
   rotationRisk: boolean;
   rotationNote: string | null;
   cleanSheetProbability: number | null; // GK/DEF only
+  opponentShortName: string | null; // null if no fixture this gameweek
+  isHome: boolean | null; // null alongside opponentShortName
   /** One plain-language sentence on why this slot's value is what it is —
    *  same voice as CaptainScoreBreakdown.oneLinerReason, minus the
    *  captaincy-specific framing that doesn't apply to a starting XI slot. */

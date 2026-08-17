@@ -106,9 +106,12 @@ function buildSlot(
     webName: player.webName,
     teamShortName: teams.find((t) => t.id === player.team)?.shortName ?? "?",
     elementType: player.elementType,
+    nowCost: player.nowCost,
     value,
     isStarter: false,
     benchOrder: null,
+    opponentShortName: captain.components.fixture?.opponentShortName ?? null,
+    isHome: captain.components.fixture?.isHome ?? null,
     // Either signal is enough to flag: not nailed-on by minutes, or an
     // outright fitness/availability concern (which nailedOn alone won't
     // catch pre-season, when it defaults to true for everyone).
