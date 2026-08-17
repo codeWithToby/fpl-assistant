@@ -6,6 +6,7 @@ import { DEFAULT_SQUAD_FILTERS } from "@/lib/fpl/constants";
 import { generateRandomSquad } from "@/lib/fpl/randomSquad";
 import { track } from "@/lib/analytics/track";
 import ConfirmDialog from "./ConfirmDialog";
+import Tooltip from "./Tooltip";
 
 interface Props {
   allPlayers: Player[];
@@ -16,18 +17,22 @@ interface Props {
 
 function FilterGroup<T extends string>({
   label,
+  tooltip,
   options,
   value,
   onChange,
 }: {
   label: string;
+  tooltip: string;
   options: { value: T; label: string }[];
   value: T;
   onChange: (value: T) => void;
 }) {
   return (
     <div className="flex flex-col gap-1.5">
-      <span className="text-[10px] font-bold uppercase tracking-wide text-zinc-400">{label}</span>
+      <span className="text-[10px] font-bold uppercase tracking-wide text-zinc-400">
+        <Tooltip label={tooltip}>{label}</Tooltip>
+      </span>
       <div className="flex flex-wrap gap-1.5">
         {options.map((opt) => (
           <button
@@ -118,7 +123,8 @@ export default function RandomSquadButton({
       {showCustomize && (
         <div className="mt-3 flex flex-col gap-3 rounded-[10px] border border-dashed border-zinc-300 p-3 dark:border-zinc-700">
           <FilterGroup<BudgetStyle>
-            label="Budget style"
+            label="Spending style"
+            tooltip="How your £100m gets spread across the squad — evenly, splurged on a couple of stars, or aimed at players who score well for their price."
             value={filters.budgetStyle}
             onChange={(budgetStyle) => setFilters((f) => ({ ...f, budgetStyle }))}
             options={[
@@ -128,16 +134,18 @@ export default function RandomSquadButton({
             ]}
           />
           <FilterGroup<StarterReliability>
-            label="Starter reliability"
+            label="Playing time"
+            tooltip="Stick to players who are guaranteed to start, or allow a few whose spot in the team isn't certain."
             value={filters.starterReliability}
             onChange={(starterReliability) => setFilters((f) => ({ ...f, starterReliability }))}
             options={[
               { value: "nailedOnOnly", label: "Nailed-on only" },
-              { value: "mixRisk", label: "Mix in rotation risk" },
+              { value: "mixRisk", label: "Allow some risk" },
             ]}
           />
           <FilterGroup<FormBias>
-            label="Form bias"
+            label="Recent form"
+            tooltip="Favor players who are hot right now, or ignore recent form and go on their underlying quality instead."
             value={filters.formBias}
             onChange={(formBias) => setFilters((f) => ({ ...f, formBias }))}
             options={[
@@ -146,7 +154,8 @@ export default function RandomSquadButton({
             ]}
           />
           <FilterGroup<TeamFocus>
-            label="Team focus"
+            label="Attack vs. defense"
+            tooltip="Spend more on attackers and less on defenders, more on defenders and less on attackers, or split evenly."
             value={filters.teamFocus}
             onChange={(teamFocus) => setFilters((f) => ({ ...f, teamFocus }))}
             options={[
