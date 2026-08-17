@@ -37,7 +37,7 @@ function resolveAvailability(player: Player): {
   return { multiplier: AVAILABILITY_MULTIPLIERS.none, note: "Not fit for captaincy" };
 }
 
-function resolveNailedOn(
+export function resolveNailedOn(
   player: Player,
   finishedGameweekCount: number
 ): boolean {

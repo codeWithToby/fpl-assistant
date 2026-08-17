@@ -28,6 +28,11 @@ export default function CaptainAssistant({ bootstrap, fixtures, isStale = false 
 
   const [positionFilter, setPositionFilter] = useState<number | null>(null);
 
+  const finishedGameweekCount = useMemo(
+    () => getFinishedGameweekCount(bootstrap.events),
+    [bootstrap.events]
+  );
+
   // A pitch-slot click on the empty build pitch sets this filter so the
   // sidebar search jumps straight to that position; any bulk squad change
   // (add, random, import, clear) should drop a now-stale filter.
@@ -63,7 +68,7 @@ export default function CaptainAssistant({ bootstrap, fixtures, isStale = false 
     const params = new URLSearchParams(window.location.search);
     if (params.get("random") !== "1") return;
 
-    const squad = generateRandomSquad(bootstrap.players);
+    const squad = generateRandomSquad(bootstrap.players, finishedGameweekCount);
     if (squad) {
       handleReplaceSquad(squad);
     }
@@ -71,7 +76,7 @@ export default function CaptainAssistant({ bootstrap, fixtures, isStale = false 
     params.delete("random");
     const query = params.toString();
     window.history.replaceState(null, "", `${window.location.pathname}${query ? `?${query}` : ""}`);
-  }, [hydrated, bootstrap.players]);
+  }, [hydrated, bootstrap.players, finishedGameweekCount]);
 
   const playersById = useMemo(() => {
     const map = new Map<number, Player>();
@@ -92,11 +97,6 @@ export default function CaptainAssistant({ bootstrap, fixtures, isStale = false 
   // useRecentForm.ts. Only used for scoring below; squadPlayers itself
   // still drives the sidebar/build-pitch display, which doesn't care.
   const enrichedSquadPlayers = useRecentForm(squadPlayers);
-
-  const finishedGameweekCount = useMemo(
-    () => getFinishedGameweekCount(bootstrap.events),
-    [bootstrap.events]
-  );
 
   const currentGameweek = useMemo(
     () => getCurrentGameweek(bootstrap.events),
@@ -207,6 +207,7 @@ export default function CaptainAssistant({ bootstrap, fixtures, isStale = false 
             teams={bootstrap.teams}
             squadPlayers={squadPlayers}
             currentGameweekId={currentGameweekId}
+            finishedGameweekCount={finishedGameweekCount}
             onAdd={handleAdd}
             onRemove={removePlayer}
             onReplaceSquad={handleReplaceSquad}

@@ -33,6 +33,7 @@ async function fetchBootstrapRaw(): Promise<BootstrapData> {
       expectedGoalsConcededPer90: p.expected_goals_conceded_per_90 ?? 0,
       status: p.status as PlayerStatus,
       chanceOfPlayingNextRound: p.chance_of_playing_next_round,
+      totalPoints: p.total_points,
     })),
     teams: raw.teams.map((t) => ({
       id: t.id,

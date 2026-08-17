@@ -1,3 +1,5 @@
+import type { SquadFilters } from "./types";
+
 // Captain score = weighted sum of three 0-100 components, gated by
 // availability. Weighted sum (not multiplicative) so one weak signal
 // can't tank an otherwise strong pick.
@@ -156,6 +158,35 @@ export const SQUAD_POSITION_NEEDS: Record<number, number> = {
   4: 3, // FWD
 };
 export const RANDOM_SQUAD_MAX_ATTEMPTS = 25;
+
+// --- Random squad filters (Customize panel) ---
+
+export const DEFAULT_SQUAD_FILTERS: SquadFilters = {
+  budgetStyle: "balanced",
+  starterReliability: "mixRisk",
+  formBias: "ignoreForm",
+  teamFocus: "balanced",
+};
+
+// Fraction of a position's pool kept after narrowing toward the better end
+// of a metric (form, or points-per-million) — a soft nudge, not a strict
+// cutoff, so there's always a reasonably-sized random pool left to pick
+// from rather than an almost-deterministic top pick.
+export const FORM_OR_VALUE_KEEP_FRACTION = 0.4;
+
+// Tighter fraction for Stars & Scrubs' price-based narrowing, since it's
+// deliberately picking from the extreme end (priciest for the 2 star
+// slots, cheapest for every other slot) rather than just nudging.
+export const STARS_AND_SCRUBS_KEEP_FRACTION = 0.15;
+
+// Share of SQUAD_BUDGET routed to the attack sub-draft (MID+FWD's 8 slots)
+// under Team Focus. Balanced doesn't use this at all — it runs a single
+// unsplit draft over all 15 slots, identical to today's behavior, rather
+// than a 50/50-ish split that would subtly differ from it.
+export const TEAM_FOCUS_ATTACK_BUDGET_SHARE = {
+  attackHeavy: 0.7,
+  defenseHeavy: 0.3,
+} as const;
 
 // --- Recent form (recency adjustment) ---
 

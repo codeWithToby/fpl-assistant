@@ -18,10 +18,25 @@ export interface Player {
   expectedGoalsConcededPer90: number;
   status: PlayerStatus;
   chanceOfPlayingNextRound: number | null;
+  totalPoints: number;
   // Set once recent-form data has been fetched for this player (see
   // recentForm.ts) — undefined until then, meaning "no recent data yet,
   // use season-to-date". Not one of the raw bootstrap-static fields.
   recentMinutesRatio?: number | null;
+}
+
+// --- Random squad filters ---
+
+export type BudgetStyle = "balanced" | "starsAndScrubs" | "valueHunters";
+export type StarterReliability = "nailedOnOnly" | "mixRisk";
+export type FormBias = "inForm" | "ignoreForm";
+export type TeamFocus = "balanced" | "attackHeavy" | "defenseHeavy";
+
+export interface SquadFilters {
+  budgetStyle: BudgetStyle;
+  starterReliability: StarterReliability;
+  formBias: FormBias;
+  teamFocus: TeamFocus;
 }
 
 export interface Team {

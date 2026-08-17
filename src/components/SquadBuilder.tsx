@@ -13,6 +13,7 @@ interface Props {
   teams: Team[];
   squadPlayers: Player[];
   currentGameweekId: number | null;
+  finishedGameweekCount: number;
   onAdd: (id: number) => void;
   onRemove: (id: number) => void;
   onReplaceSquad: (ids: number[]) => void;
@@ -28,6 +29,7 @@ export default function SquadBuilder({
   teams,
   squadPlayers,
   currentGameweekId,
+  finishedGameweekCount,
   onAdd,
   onRemove,
   onReplaceSquad,
@@ -99,6 +101,7 @@ export default function SquadBuilder({
         allPlayers={allPlayers}
         onGenerate={onReplaceSquad}
         hasSquad={squadPlayers.length > 0}
+        finishedGameweekCount={finishedGameweekCount}
       />
 
       <PlayerSearchCombobox

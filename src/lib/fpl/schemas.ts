@@ -36,6 +36,7 @@ export const rawPlayerSchema = z.object({
   expected_goals_conceded_per_90: z.number(),
   status: z.string(),
   chance_of_playing_next_round: z.number().nullable(),
+  total_points: z.number(),
 });
 
 export const rawTeamSchema = z.object({
