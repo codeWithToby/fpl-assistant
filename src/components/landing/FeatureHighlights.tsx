@@ -57,6 +57,22 @@ const FEATURES: Feature[] = [
       </div>
     ),
   },
+  {
+    title: "Team of the Week",
+    description:
+      "The strongest possible squad from every player in the league this gameweek, with its own Captain Call — no squad-building required.",
+    preview: (
+      <div className="flex h-24 flex-col justify-center gap-1.5 rounded-[8px] border border-zinc-200 bg-zinc-50 p-3 dark:border-zinc-700 dark:bg-zinc-800/50">
+        <span className="text-xs font-bold uppercase tracking-wide text-zinc-400 dark:text-zinc-500">
+          This gameweek
+        </span>
+        <span className="text-lg font-bold text-foreground">
+          3-4-3 <span className="text-sm font-normal text-zinc-400 dark:text-zinc-500">· £99.5m</span>
+        </span>
+        <span className="text-[11px] text-zinc-500 dark:text-zinc-400">No squad needed</span>
+      </div>
+    ),
+  },
 ];
 
 export default function FeatureHighlights() {
@@ -72,7 +88,7 @@ export default function FeatureHighlights() {
           </h2>
         </div>
 
-        <div className="mt-10 grid grid-cols-1 gap-6 md:grid-cols-3">
+        <div className="mt-10 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {FEATURES.map((f) => (
             <div
               key={f.title}
@@ -86,10 +102,6 @@ export default function FeatureHighlights() {
             </div>
           ))}
         </div>
-
-        <p className="mt-8 text-sm text-zinc-500 dark:text-zinc-400">
-          More of your weekly decisions are on the way.
-        </p>
       </div>
     </section>
   );

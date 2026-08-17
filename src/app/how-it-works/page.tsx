@@ -82,10 +82,9 @@ export default function HowItWorksPage() {
           </div>
 
           <p className="mt-6 max-w-prose text-sm leading-relaxed text-zinc-600 dark:text-zinc-300">
-            If a player&apos;s injured or a doubt, their score shrinks to match — a 50/50 chance of
-            playing cuts it in half, genuinely unavailable drops it to zero — so a fit, in-form
-            player never loses out to a bigger name who might not even take the pitch. Whoever comes
-            out on top is the pick, with the reasoning spelled out, not just a name.
+            If a player&apos;s a doubt, their score shrinks to match — a 50/50 chance halves it, a
+            real injury zeroes it out — so a fit, in-form player never loses to a bigger name who
+            might not even play. Whoever&apos;s left on top is the pick, reasoning included.
           </p>
 
           <div className="mt-10 border-t border-zinc-200 pt-8 dark:border-zinc-700">
@@ -96,12 +95,10 @@ export default function HowItWorksPage() {
               </h3>
             </div>
             <p className="mt-3 max-w-prose text-sm leading-relaxed text-zinc-600 dark:text-zinc-300">
-              Most weeks, the top pick is simply the best option available — solid, not spectacular.
-              Every so often, everything lines up at once: a high score, real goal threat, an easy
-              fixture, strong form, and zero fitness concerns. Only when{" "}
-              <strong className="font-semibold text-foreground">every one</strong> of those is true
-              does it get flagged as a genuine Triple Captain candidate — not just &ldquo;the best of
-              an average week.&rdquo;
+              Most weeks the top pick is just the best option available — solid, not spectacular.
+              When a high score, real goal threat, an easy fixture, strong form, and full fitness
+              all line up at once, it&apos;s flagged as a genuine Triple Captain candidate — not
+              just the best of an average week.
             </p>
           </div>
         </div>
@@ -120,9 +117,9 @@ export default function HowItWorksPage() {
           <div className="mt-6 grid grid-cols-1 gap-8 lg:grid-cols-[1fr_260px] lg:items-start">
             <div>
               <p className="max-w-prose text-sm leading-relaxed text-zinc-600 dark:text-zinc-300 md:text-base">
-                Attackers and midfielders are scored on the same goal-threat formula as the captain
-                call. Defenders and keepers get their own formula instead, since attacking output
-                barely applies to them:
+                Attackers and midfielders use the same goal-threat formula as the Captain Call.
+                Defenders and keepers get their own formula, since attacking output barely applies
+                to them:
               </p>
               <div className="mt-5 rounded-[10px] border border-zinc-200 bg-background px-5 dark:border-zinc-700">
                 <WeightBar label="Clean sheet chance" percent={60} maxPercent={60}>
@@ -134,10 +131,9 @@ export default function HowItWorksPage() {
                 </WeightBar>
               </div>
               <p className="mt-5 max-w-prose text-sm leading-relaxed text-zinc-600 dark:text-zinc-300 md:text-base">
-                From there, we test every formation the real rules allow — anywhere from 3 to 5
-                defenders, 2 to 5 midfielders, 1 to 3 forwards — and pick whichever combination adds
-                up to the highest total score. That&apos;s your XI and your bench, in order of who&apos;d
-                come on next.
+                From there, every formation the rules allow — 3 to 5 defenders, 2 to 5 midfielders,
+                1 to 3 forwards — gets tested, and whichever adds up to the highest score becomes
+                your XI and bench, in substitution order.
               </p>
             </div>
 
@@ -150,9 +146,23 @@ export default function HowItWorksPage() {
           </div>
 
           <p className="mt-6 max-w-prose text-sm font-medium leading-relaxed text-amber-700 dark:text-amber-400">
-            ⚠ Anyone who hasn&apos;t been playing full minutes lately, or carries an injury doubt,
-            gets flagged right on their card — never just quietly left out with no explanation.
+            ⚠ Rotation risks and injury doubts get flagged right on the card — never quietly left
+            out with no explanation.
           </p>
+
+          <div className="mt-8 max-w-prose rounded-[10px] border border-zinc-200 bg-background p-5 dark:border-zinc-700">
+            <p className="text-sm leading-relaxed text-zinc-600 dark:text-zinc-300">
+              Same logic, no squad required —{" "}
+              <Link
+                href="/team-of-the-week"
+                className="font-semibold text-brand-light underline decoration-dotted underline-offset-2 dark:text-pitch"
+              >
+                Team of the Week
+              </Link>{" "}
+              is this gameweek&apos;s strongest possible XI from every player in the league, with
+              its own Captain Call.
+            </p>
+          </div>
         </div>
       </section>
 
@@ -166,10 +176,9 @@ export default function HowItWorksPage() {
             Clean Sheet Probability
           </h2>
           <p className="mt-4 max-w-prose text-sm leading-relaxed text-zinc-600 dark:text-zinc-300 md:text-base">
-            For each one, we start from their team&apos;s own defensive record while they&apos;ve
-            been on the pitch, then adjust it up or down depending on how tough the next opponent is
-            rated. That gives an expected-goals-conceded number for the fixture, which converts
-            directly into a percentage — their chance of keeping a clean sheet next gameweek.
+            We start from their team&apos;s defensive record while they&apos;re on the pitch, then
+            adjust it for how tough the next opponent is — that gives an expected-goals-conceded
+            number, which converts straight into a clean sheet percentage.
           </p>
 
           <div className="mt-6 rounded-[10px] border border-zinc-200 bg-background p-5 dark:border-zinc-700">
@@ -189,9 +198,9 @@ export default function HowItWorksPage() {
           </div>
 
           <p className="mt-6 max-w-prose text-sm leading-relaxed text-zinc-600 dark:text-zinc-300">
-            If someone&apos;s barely played — a fresh signing, back from injury — their own record
-            isn&apos;t a reliable sample yet, so we use a league-average defensive rate instead.
-            Keeps the number honest rather than confidently wrong.
+            If someone&apos;s barely played — a fresh signing, back from injury — we use a
+            league-average rate instead of an unreliable small sample. Honest, not confidently
+            wrong.
           </p>
         </div>
       </section>
@@ -205,9 +214,10 @@ export default function HowItWorksPage() {
             </span>
             <h2 className="mt-2 text-xl font-bold tracking-tight text-foreground">Random Squad</h2>
             <p className="mt-3 text-sm leading-relaxed text-zinc-600 dark:text-zinc-300">
-              One click builds a complete, legal 15-man squad inside the real budget. Picks are
-              random, but budget-aware — before every pick it checks there&apos;s still enough money
-              left to fill every remaining slot, so it never paints itself into a corner.
+              One click builds a complete, legal 15-man squad inside the real budget — budget-aware
+              at every pick, so it never paints itself into a corner. Want more control? An optional
+              Customize panel lets you bias the picks toward value, nailed-on starters, hot form, or
+              an attack- or defense-heavy squad.
             </p>
             <div className="mt-4 flex flex-wrap gap-1.5">
               {["2 GK", "5 DEF", "5 MID", "3 FWD", "£100.0m", "Max 3/club"].map((chip) => (
