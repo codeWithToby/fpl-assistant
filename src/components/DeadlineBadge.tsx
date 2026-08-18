@@ -41,6 +41,9 @@ export default function DeadlineBadge({ gameweekName, deadlineTime }: Props) {
   const [relative, setRelative] = useState<string | null>(null);
 
   useEffect(() => {
+    // Deliberately client-only (see comment above) — nothing for React to
+    // mismatch, since the server never renders a value for this at all.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setRelative(formatRelative(deadlineTime));
   }, [deadlineTime]);
 

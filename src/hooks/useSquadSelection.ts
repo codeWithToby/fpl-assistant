@@ -30,6 +30,9 @@ export function useSquadSelection(allPlayers: Player[]) {
       const raw = window.localStorage.getItem(STORAGE_KEY);
       const parsed = raw ? JSON.parse(raw) : null;
       if (Array.isArray(parsed) && parsed.every((id) => typeof id === "number")) {
+        // One-time hydration from an external store (localStorage), not
+        // state derived from a prop/state change — see comment above.
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setSquadIds(parsed);
       }
     } catch {

@@ -70,6 +70,9 @@ export default function CaptainAssistant({ bootstrap, fixtures, isStale = false 
 
     const squad = generateRandomSquad(bootstrap.players, finishedGameweekCount);
     if (squad) {
+      // Reacting to the URL's ?random=1 on arrival, a one-time external
+      // signal — not state derived from a prop/state change.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       handleReplaceSquad(squad);
     }
 
