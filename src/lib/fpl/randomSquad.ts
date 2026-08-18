@@ -146,19 +146,33 @@ function attemptDraft(players: Player[], opts: DraftOptions): DraftResult | null
   let remainingBudget = opts.budget;
   const picked: number[] = [];
 
-  // Cheapest still-available player for a type — optionally restricted to
-  // the star price band, for estimating a future slot that Stars & Scrubs
-  // will force to be expensive. Using the pool-wide cheapest for a pending
-  // star slot would understate its real minimum cost (it can never
-  // actually draw from the cheap end), letting the budget-safety check
-  // above overspend early and blow the total by the time that slot is
-  // actually drafted.
+  // Cheapest still-available player for a type, estimating what a future
+  // slot will actually cost once its own narrowing applies — not the raw
+  // pool's cheapest. A pending star slot can never draw from the cheap
+  // end, and a pending Nailed-on-only/Value-Hunters/In-form slot can't
+  // freely draw from it either; using the unfiltered floor for either
+  // understates the real minimum cost, letting the budget-safety check
+  // below overspend early and starve a later filtered slot dry (this is
+  // exactly what let every randomized attempt silently fail under
+  // Nailed-on Only until this floor accounted for it too).
   const cheapestRemaining = (type: number, asStarSlot: boolean) => {
     const available = pools[type].filter((p) => !pickedIds.has(p.id));
-    const pool = asStarSlot
-      ? narrowPool(available, (p) => p.nowCost, "top", STARS_AND_SCRUBS_KEEP_FRACTION)
-      : available;
-    return pool.length > 0 ? Math.min(...pool.map((p) => p.nowCost)) : null;
+    if (asStarSlot) {
+      const starPool = narrowPool(available, (p) => p.nowCost, "top", STARS_AND_SCRUBS_KEEP_FRACTION);
+      return starPool.length > 0 ? Math.min(...starPool.map((p) => p.nowCost)) : null;
+    }
+
+    // Mirror the same narrowing (and same graceful stop-if-it-would-empty
+    // rule as candidatesWithFallback) a real non-star slot of this type
+    // will apply when it's actually drafted.
+    const narrowingSteps = buildNarrowingSteps(false, opts.filters, opts.finishedGameweekCount);
+    let narrowed = available;
+    for (const step of narrowingSteps) {
+      const next = step(narrowed);
+      if (next.length === 0) break;
+      narrowed = next;
+    }
+    return narrowed.length > 0 ? Math.min(...narrowed.map((p) => p.nowCost)) : null;
   };
 
   for (let i = 0; i < slots.length; i++) {
