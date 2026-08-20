@@ -210,6 +210,7 @@ export default function CaptainAssistant({ bootstrap, fixtures, isStale = false 
             teams={bootstrap.teams}
             squadPlayers={squadPlayers}
             currentGameweekId={currentGameweekId}
+            deadlineTime={currentGameweek?.deadlineTime ?? null}
             finishedGameweekCount={finishedGameweekCount}
             onAdd={handleAdd}
             onRemove={removePlayer}

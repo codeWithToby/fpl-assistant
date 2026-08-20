@@ -13,6 +13,7 @@ interface Props {
   teams: Team[];
   squadPlayers: Player[];
   currentGameweekId: number | null;
+  deadlineTime: string | null;
   finishedGameweekCount: number;
   onAdd: (id: number) => void;
   onRemove: (id: number) => void;
@@ -29,6 +30,7 @@ export default function SquadBuilder({
   teams,
   squadPlayers,
   currentGameweekId,
+  deadlineTime,
   finishedGameweekCount,
   onAdd,
   onRemove,
@@ -87,6 +89,7 @@ export default function SquadBuilder({
 
       <ImportSquadForm
         currentGameweekId={currentGameweekId}
+        deadlineTime={deadlineTime}
         onImport={onReplaceSquad}
         hasSquad={squadPlayers.length > 0}
       />

@@ -3,7 +3,11 @@ import { fetchEntryPicks, type EntryPicksErrorCode } from "@/lib/fpl/fetchEntryP
 
 const ERROR_RESPONSES: Record<EntryPicksErrorCode, { status: number; message: string }> = {
   team_not_found: { status: 404, message: "Couldn't find that Team ID." },
-  no_picks_for_event: { status: 404, message: "No squad set for this gameweek yet." },
+  no_picks_for_event: {
+    status: 404,
+    message:
+      "FPL hides everyone's picks until the gameweek deadline passes — build your squad manually for now, Import will work once it's gone.",
+  },
   upstream_error: { status: 502, message: "FPL is unavailable right now — try again shortly." },
 };
 

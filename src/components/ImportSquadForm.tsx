@@ -1,20 +1,36 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import { track } from "@/lib/analytics/track";
 import ConfirmDialog from "./ConfirmDialog";
 
 interface Props {
   currentGameweekId: number | null;
+  deadlineTime: string | null;
   onImport: (ids: number[]) => void;
   hasSquad: boolean;
 }
 
-export default function ImportSquadForm({ currentGameweekId, onImport, hasSquad }: Props) {
+export default function ImportSquadForm({
+  currentGameweekId,
+  deadlineTime,
+  onImport,
+  hasSquad,
+}: Props) {
   const [teamId, setTeamId] = useState("");
   const [status, setStatus] = useState<"idle" | "loading" | "error">("idle");
   const [errorMessage, setErrorMessage] = useState("");
   const [pendingImport, setPendingImport] = useState<number[] | null>(null);
+
+  // Computed client-side after mount, same as DeadlineBadge — avoids a
+  // server/client clock mismatch, and the server never renders a value
+  // for this anyway.
+  const [isPreDeadline, setIsPreDeadline] = useState(false);
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setIsPreDeadline(deadlineTime ? new Date(deadlineTime).getTime() > Date.now() : false);
+  }, [deadlineTime]);
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
@@ -93,6 +109,13 @@ export default function ImportSquadForm({ currentGameweekId, onImport, hasSquad 
       </div>
 
       {status === "error" && <p className="text-xs text-risk">{errorMessage}</p>}
+
+      {isPreDeadline && status !== "error" && (
+        <p className="text-xs text-amber-600 dark:text-amber-500">
+          FPL hides everyone&apos;s picks until the deadline passes — Import won&apos;t work
+          until then. Build your squad manually for now.
+        </p>
+      )}
 
       <p className="text-xs text-zinc-400">
         Find your Team ID in the URL when you view your team on the official FPL site.
