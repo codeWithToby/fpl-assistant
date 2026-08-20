@@ -1,7 +1,12 @@
 import type { CaptainScoreBreakdown, Fixture, OptimalXIResult, Player, Team } from "./types";
 import { computePlayerValue, computeOptimalXI } from "./optimalXI";
-import { computeCaptainScore } from "./scoring";
-import { MAX_PLAYERS_PER_TEAM, SQUAD_BUDGET, SQUAD_POSITION_NEEDS } from "./constants";
+import { computeCaptainScore, resolveNailedOn } from "./scoring";
+import {
+  MAX_PLAYERS_PER_TEAM,
+  SQUAD_BUDGET,
+  SQUAD_POSITION_NEEDS,
+  UNAVAILABLE_STATUSES,
+} from "./constants";
 
 export interface TeamOfTheWeekResult {
   optimalXI: OptimalXIResult;
@@ -17,6 +22,14 @@ function groupByPosition(players: Player[]): Record<number, Player[]> {
   const pools: Record<number, Player[]> = { 1: [], 2: [], 3: [], 4: [] };
   players.forEach((p) => pools[p.elementType]?.push(p));
   return pools;
+}
+
+// No listed fitness doubt at all — stricter than the availability
+// multiplier's tiers, which still allow a 75%-chance doubt through at full
+// score. "Confidently available" means chance_of_playing_next_round is
+// null, not just above some threshold.
+function isConfidentlyAvailable(player: Player): boolean {
+  return !UNAVAILABLE_STATUSES.has(player.status) && player.chanceOfPlayingNextRound === null;
 }
 
 // Picks the best 15 players the real squad rules allow (budget, 2/5/5/3 by
@@ -42,12 +55,28 @@ export function selectTeamOfTheWeek(
     valueById.set(p.id, computePlayerValue(p, teams, fixtures, finishedGameweekCount).value);
   }
 
-  const pools = groupByPosition(allPlayers);
-  for (const type of Object.keys(pools)) {
+  // Team of the Week is a one-shot, confident recommendation — unlike a
+  // user's own squad, which they already own and can weigh risk on
+  // themselves, there's no one here to show a "might not play" caveat to.
+  // So it only draws from genuinely guaranteed starters: no listed fitness
+  // doubt at all, and a real recent-minutes starter, not just healthy-if-
+  // picked. strictPools is tried first per position; fullPools is the
+  // fallback only if a position's strict pool can't fill its slots (rare,
+  // but graceful rather than failing the whole feature over it) — same
+  // philosophy randomSquad.ts uses for its Customize filters.
+  const sortByValue = (list: Player[]) =>
+    [...list].sort((a, b) => (valueById.get(b.id) ?? 0) - (valueById.get(a.id) ?? 0));
+
+  const fullPools = groupByPosition(allPlayers);
+  const strictPools = groupByPosition(
+    allPlayers.filter(
+      (p) => isConfidentlyAvailable(p) && resolveNailedOn(p, finishedGameweekCount)
+    )
+  );
+  for (const type of Object.keys(fullPools)) {
     const key = Number(type);
-    pools[key] = [...pools[key]].sort(
-      (a, b) => (valueById.get(b.id) ?? 0) - (valueById.get(a.id) ?? 0)
-    );
+    fullPools[key] = sortByValue(fullPools[key]);
+    strictPools[key] = sortByValue(strictPools[key]);
   }
 
   const slots: number[] = [];
@@ -60,8 +89,13 @@ export function selectTeamOfTheWeek(
   let remainingBudget = SQUAD_BUDGET;
   const picked: Player[] = [];
 
+  // The true floor always comes from the full pool, since that's what a
+  // future slot can fall back to if its own strict pool runs dry — using
+  // the (cheaper, more populous) strict pool here could overestimate the
+  // floor and reject an affordable pick now for a shortage that would
+  // never actually happen.
   const cheapestRemaining = (type: number) => {
-    const eligible = pools[type].filter((p) => !pickedIds.has(p.id));
+    const eligible = fullPools[type].filter((p) => !pickedIds.has(p.id));
     return eligible.length > 0 ? Math.min(...eligible.map((p) => p.nowCost)) : null;
   };
 
@@ -69,9 +103,10 @@ export function selectTeamOfTheWeek(
     const type = slots[i];
     const remainingAfter = slots.slice(i + 1);
 
-    const eligible = pools[type].filter(
-      (p) => !pickedIds.has(p.id) && (teamCounts.get(p.team) ?? 0) < MAX_PLAYERS_PER_TEAM
-    );
+    const isUsable = (p: Player) =>
+      !pickedIds.has(p.id) && (teamCounts.get(p.team) ?? 0) < MAX_PLAYERS_PER_TEAM;
+    const strictEligible = strictPools[type].filter(isUsable);
+    const eligible = strictEligible.length > 0 ? strictEligible : fullPools[type].filter(isUsable);
     if (eligible.length === 0) return null;
 
     let minCostForRest = 0;
@@ -101,7 +136,12 @@ export function selectTeamOfTheWeek(
       const budgetWithoutCurrent = remainingBudget + current.nowCost;
       const teamCountWithoutCurrent = (teamCounts.get(current.team) ?? 0) - 1;
 
-      const betterOption = pools[current.elementType].find((candidate) => {
+      // Only searches strictPools, not fullPools — this pass is an
+      // optional "does a swap help" polish, not a constraint enforcer, so
+      // it should never reintroduce a doubtful/rotation-risk player purely
+      // for a value gain. A slot already drawing from fullPools (its own
+      // strict pool was exhausted at draft time) is left as-is here.
+      const betterOption = strictPools[current.elementType].find((candidate) => {
         if (pickedIds.has(candidate.id)) return false;
         if (candidate.nowCost > budgetWithoutCurrent) return false;
         const candidateTeamCount =

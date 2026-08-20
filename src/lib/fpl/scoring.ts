@@ -19,8 +19,19 @@ function resolveAvailability(player: Player): {
   }
 
   const chance = player.chanceOfPlayingNextRound;
-  if (chance === null || chance >= 75) {
+  // null (nothing listed) and exactly 100 (explicitly confirmed fit, e.g.
+  // after clearing an earlier doubt) both mean "no real concern" — only
+  // these two get a silent pass. Anything below 100, including 75, is FPL
+  // flagging a real, current doubt, so it keeps a note even where the
+  // multiplier stays full.
+  if (chance === null || chance === 100) {
     return { multiplier: AVAILABILITY_MULTIPLIERS.full, note: null };
+  }
+  if (chance >= 75) {
+    return {
+      multiplier: AVAILABILITY_MULTIPLIERS.full,
+      note: `Fitness doubt — ${chance}% chance of playing`,
+    };
   }
   if (chance >= 50) {
     return {
@@ -210,7 +221,7 @@ export function computeCaptainScore(
       xgi90 >= TRIPLE_CAPTAIN_THRESHOLDS.minXgiPer90 &&
       (nextFixture?.difficulty ?? 5) <= TRIPLE_CAPTAIN_THRESHOLDS.maxFdr &&
       player.form >= TRIPLE_CAPTAIN_THRESHOLDS.minForm &&
-      availability.multiplier === 1.0 &&
+      availability.note === null &&
       nailedOn,
   };
 

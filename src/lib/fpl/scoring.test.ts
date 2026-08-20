@@ -64,11 +64,29 @@ describe("computeCaptainScore — availability", () => {
     expect(doubt.totalScore).toBe(Math.round(fit.totalScore * 0.5));
   });
 
-  it("keeps full score at 100% and null (unknown/no doubt) chance of playing", () => {
+  it("keeps full score at 100% and null (unknown/no doubt) chance of playing, with no note", () => {
     const full = computeCaptainScore(basePlayer({ chanceOfPlayingNextRound: 100 }), teams, fixtureWithDifficulty(3), 6);
     const unknown = computeCaptainScore(basePlayer({ chanceOfPlayingNextRound: null }), teams, fixtureWithDifficulty(3), 6);
     expect(full.availability.multiplier).toBe(1);
+    expect(full.availability.note).toBeNull();
     expect(unknown.availability.multiplier).toBe(1);
+    expect(unknown.availability.note).toBeNull();
+  });
+
+  // The actual bug this project shipped: a real, live "Knock - 75% chance
+  // of playing" doubt (FPL's own status "d") was silently showing zero
+  // warning anywhere in the app, because the old threshold treated
+  // chance >= 75 as fully fit with no note at all — collapsing a genuine,
+  // current doubt into the same bucket as "nothing wrong."
+  it("still flags a note at 75% chance, even though the multiplier stays full", () => {
+    const result = computeCaptainScore(
+      basePlayer({ status: "d", chanceOfPlayingNextRound: 75 }),
+      teams,
+      fixtureWithDifficulty(3),
+      6
+    );
+    expect(result.availability.multiplier).toBe(1);
+    expect(result.availability.note).toBe("Fitness doubt — 75% chance of playing");
   });
 });
 

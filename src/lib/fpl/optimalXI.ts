@@ -112,10 +112,12 @@ function buildSlot(
     benchOrder: null,
     opponentShortName: captain.components.fixture?.opponentShortName ?? null,
     isHome: captain.components.fixture?.isHome ?? null,
-    // Either signal is enough to flag: not nailed-on by minutes, or an
-    // outright fitness/availability concern (which nailedOn alone won't
-    // catch pre-season, when it defaults to true for everyone).
-    rotationRisk: !captain.nailedOn || captain.availability.multiplier < 1,
+    // Either signal is enough to flag: not nailed-on by minutes, or a
+    // fitness/availability note exists at all (not just a multiplier
+    // discount) — a 75%-chance doubt keeps the full multiplier but still
+    // deserves the flag, which nailedOn alone won't catch pre-season,
+    // when it defaults to true for everyone.
+    rotationRisk: !captain.nailedOn || captain.availability.note !== null,
     rotationNote: rotationNoteFor(
       captain.nailedOn,
       captain.availability.note,
